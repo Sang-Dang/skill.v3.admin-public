@@ -13,7 +13,7 @@ export const Route = createFileRoute('/_dashboard-layout/accounts/create')({
     component: CreateAccountComponent,
     loader: ({ context: { queryClient } }) => {
         const accounts = queryClient.ensureQueryData({
-            queryKey: accountQueryKeys.GetAll,
+            queryKey: accountQueryKeys.GetAll(),
             queryFn: Accounts_GetAll,
         })
 

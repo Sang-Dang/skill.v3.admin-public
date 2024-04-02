@@ -90,7 +90,12 @@ function CreateTicketComponent() {
             breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
             innerStyle={{ marginBlock: '25px' }}
         >
-            <ContentWrapper.ContentCard useCard>
+            <ContentWrapper.ContentCard
+                useCard
+                cardProps={{
+                    title: 'Please fill out the form below to create a new ticket.',
+                }}
+            >
                 <Form
                     form={form}
                     name='create-account-form'
