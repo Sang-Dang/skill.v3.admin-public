@@ -6,7 +6,15 @@ type Request = Pick<ProjectModel, 'projectName' | 'description' | 'startDate' | 
 type Response = ProjectModel
 
 export async function Project_Create(req: Request) {
-    return axios.post<Response>('/project', req, {
-        transformResponse: [(data) => transformRes(data, (res) => ProjectModel.fromJSON(res.data))],
-    })
+    return axios.post<Response>(
+        '/project',
+        {
+            ...req,
+            startDate: req.startDate.toISOString(),
+            endDate: req.endDate.toISOString(),
+        },
+        {
+            transformResponse: [(data) => transformRes(data, (res) => ProjectModel.fromJSON(res.data))],
+        },
+    )
 }

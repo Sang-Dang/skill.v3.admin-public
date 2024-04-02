@@ -33,13 +33,13 @@ export class BaseModel implements IBase {
         })
     }
 
-    static serialize(model: BaseModel): { [key in keyof IBase]: string } {
+    static serialize(model: Partial<BaseModel>): { [key in keyof IBase]: any } {
         return {
             id: model.id,
             key: model.id,
-            createdAt: model.createdAt.format(),
-            updatedAt: model.updatedAt.format(),
-            deletedAt: model.deletedAt?.format() ?? '',
+            createdAt: model.createdAt?.toISOString(),
+            updatedAt: model.updatedAt?.toISOString(),
+            deletedAt: model.deletedAt?.toISOString() ?? '',
         }
     }
 }

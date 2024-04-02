@@ -48,15 +48,15 @@ export class TicketModel extends BaseModel implements ITicket {
         return records.map((record) => TicketModel.fromJSON(record) as TicketModel)
     }
 
-    static serialize(model: TicketModel): { [key in keyof ITicket]: string } {
+    static serialize(model: Partial<TicketModel>): { [key in keyof ITicket]: any } {
         return {
             ...super.serialize(model),
             ticketName: model.ticketName,
             description: model.description,
-            price: model.price.toString(),
-            quantity: model.quantity.toString(),
-            startDate: model.startDate.format(),
-            endDate: model.endDate.format(),
+            price: model.price?.toString(),
+            quantity: model.quantity?.toString(),
+            startDate: model.startDate?.toISOString(),
+            endDate: model.endDate?.toISOString(),
             project: model.project,
         }
     }

@@ -11,7 +11,7 @@ import { Dayjs } from 'dayjs'
 export const Route = createFileRoute('/_dashboard-layout/tickets/create')({
     component: CreateTicketComponent,
     loader: ({ context: { queryClient } }) => {
-        const projects = queryClient.ensureQueryData({
+        const projects = queryClient.fetchQuery({
             queryKey: projectQueryKeys.GetAll(),
             queryFn: () => Project_GetAll(),
         })

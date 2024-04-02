@@ -36,13 +36,13 @@ export class ProjectModel extends BaseModel implements IProject {
         return records.map((record) => ProjectModel.fromJSON(record))
     }
 
-    static serialize(model: ProjectModel): { [key in keyof IProject]: string } {
+    static serialize(model: Partial<ProjectModel>): { [key in keyof IProject]: any } {
         return {
             ...BaseModel.serialize(model),
             projectName: model.projectName,
             description: model.description,
-            startDate: model.startDate.format(),
-            endDate: model.endDate.format(),
+            startDate: model.startDate?.toISOString(),
+            endDate: model.endDate?.toISOString(),
         }
     }
 }

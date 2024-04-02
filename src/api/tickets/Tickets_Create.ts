@@ -6,7 +6,11 @@ type Request = Pick<TicketModel, 'ticketName' | 'description' | 'price' | 'quant
 type Response = TicketModel
 
 export async function Tickets_Create(req: Request) {
-    return axios.post<Response>('/ticket', req, {
+    return axios.post<Response>('/ticket', {
+        ...req,
+        startDate: req.startDate.toISOString(),
+        endDate: req.endDate.toISOString(),
+    }, {
         transformResponse: [(data) => transformRes(data, (res) => TicketModel.fromJSON(res.data))],
     })
 }
