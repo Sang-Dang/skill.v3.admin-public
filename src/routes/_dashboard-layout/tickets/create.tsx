@@ -85,8 +85,8 @@ function CreateTicketComponent() {
 
     return (
         <ContentWrapper
-            headTitle='Create Account'
-            title='Create Account'
+            headTitle='Create Ticket'
+            title='Create Ticket'
             breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
             innerStyle={{ marginBlock: '25px' }}
         >
@@ -116,6 +116,24 @@ function CreateTicketComponent() {
                                     ]}
                                     fieldProps={{
                                         size: 'large',
+                                    }}
+                                />
+                                <ProFormSelect
+                                    name='project'
+                                    label='Project'
+                                    rules={[
+                                        {
+                                            required: true,
+                                        },
+                                    ]}
+                                    options={projects.data.map((project) => ({
+                                        label: project.projectName,
+                                        value: project.id,
+                                    }))}
+                                    placeholder='Select a project'
+                                    fieldProps={{
+                                        size: 'large',
+                                        showSearch: true,
                                     }}
                                 />
                                 <Flex gap={24}>
@@ -171,24 +189,6 @@ function CreateTicketComponent() {
                                         ]}
                                     />
                                 </Flex>
-                                <ProFormSelect
-                                    name='project'
-                                    label='Project'
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    options={projects.data.map((project) => ({
-                                        label: project.projectName,
-                                        value: project.id,
-                                    }))}
-                                    placeholder='Select a project'
-                                    fieldProps={{
-                                        size: 'large',
-                                        showSearch: true,
-                                    }}
-                                />
                                 <ProFormTextArea
                                     name='description'
                                     label='Description'
