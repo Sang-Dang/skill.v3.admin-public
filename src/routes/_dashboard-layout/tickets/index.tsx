@@ -34,7 +34,7 @@ export const Route = createFileRoute('/_dashboard-layout/tickets/')({
 export function TicketsComponent() {
     const search = Route.useSearch({
         select: (data) => ({
-            limit: data.limit ?? 10,
+            limit: data.limit ?? 7,
             page: data.page ?? 1,
             tab: data.tab ?? Tab.ALL,
         }),

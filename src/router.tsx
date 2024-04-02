@@ -1,3 +1,4 @@
+import NetworkError from '@/common/components/DefaultNetworkErrorPage'
 import DefaultNotFoundPage from '@/common/components/DefaultNotFoundPage'
 import { AuthHandler } from '@/lib/AuthHandler'
 import { routeTree } from '@/routeTree.gen'
@@ -22,6 +23,7 @@ export const router = createRouter({
     },
     notFoundMode: 'fuzzy',
     defaultNotFoundComponent: () => <DefaultNotFoundPage />,
+    defaultErrorComponent: () => <NetworkError />,
 })
 
 declare module '@tanstack/react-router' {
