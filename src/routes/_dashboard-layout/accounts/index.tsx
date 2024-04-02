@@ -1,4 +1,6 @@
+import { accountQueryKeys } from '@/api/accounts/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
+import RefreshButton from '@/common/components/ReloadButton'
 import { Role } from '@/lib/enum/role.enum'
 import AccountsByRoleTable from '@/routes/_dashboard-layout/accounts/-components/AccountsByRoleTable'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
@@ -69,6 +71,7 @@ export function AccountsComponent() {
                     })
                 }}
                 destroyInactiveTabPane
+                tabBarExtraContent={<RefreshButton queryKey={accountQueryKeys.GetAll()} />}
                 items={[
                     {
                         tabKey: Role.ADMIN,

@@ -1,9 +1,9 @@
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RoleTag from '@/common/components/RoleTag'
+import TableActionsButton from '@/common/components/TableActionsButton'
 import { AuthModel } from '@/lib/model/auth.model'
-import { DeleteOutlined, IdcardOutlined } from '@ant-design/icons'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Dropdown, Pagination, Table, theme } from 'antd'
+import { Grid, Pagination, Table, theme } from 'antd'
 import dayjs from 'dayjs'
 
 type AccountTableProps = {
@@ -15,8 +15,8 @@ type AccountTableProps = {
 
 export default function BaseAccountsTable({ page, limit, accounts, isLoading }: AccountTableProps) {
     const navigate = useNavigate()
-    const { message } = App.useApp()
     const { token } = theme.useToken()
+    const screens = Grid.useBreakpoint()
 
     return (
         <>
@@ -43,7 +43,7 @@ export default function BaseAccountsTable({ page, limit, accounts, isLoading }: 
                             key: 'accountsTable-username',
                             title: 'Username',
                             dataIndex: 'username',
-                            width: 150,
+                            width: 100,
                             ellipsis: true,
                         },
                         {
@@ -76,47 +76,11 @@ export default function BaseAccountsTable({ page, limit, accounts, isLoading }: 
                         },
                         {
                             key: 'accountsTable-action',
-                            title: 'Action',
+                            title: screens.xs ? 'Atn.' : 'Action',
                             fixed: 'right',
-                            width: 150,
-                            render: (_, record) => (
-                                <Dropdown.Button
-                                    style={{
-                                        float: 'right',
-                                        display: 'inline',
-                                    }}
-                                    size='middle'
-                                    menu={{
-                                        items: [
-                                            {
-                                                label: 'Copy ID',
-                                                key: 'accounts-copyId',
-                                                onClick: () => {
-                                                    navigator.clipboard.writeText(record.id)
-                                                    message.success('ID copied to clipboard')
-                                                },
-                                                icon: <IdcardOutlined />,
-                                            },
-                                            {
-                                                label: 'Delete',
-                                                key: 'accounts-deleteBtn',
-                                                icon: <DeleteOutlined />,
-                                                danger: true,
-                                            },
-                                        ],
-                                    }}
-                                    onClick={() =>
-                                        navigate({
-                                            to: '/accounts/$id',
-                                            params: {
-                                                id: record.id,
-                                            },
-                                        })
-                                    }
-                                >
-                                    View
-                                </Dropdown.Button>
-                            ),
+                            width: screens.xs ? 65 : 130,
+                            // ! URL
+                            render: (_, record) => <TableActionsButton record={record} viewLink='/accounts/$id' />,
                         },
                     ]}
                     pagination={false}

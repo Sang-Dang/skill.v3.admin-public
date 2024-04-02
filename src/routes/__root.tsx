@@ -24,7 +24,13 @@ function RootComponent() {
                 <ReactQueryDevtools initialIsOpen={false} position='right' />
                 <TanStackRouterDevtools initialIsOpen={false} position='bottom-right' />
             </Suspense>
-            <ConfigProvider>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Button: {},
+                    },
+                }}
+            >
                 <App
                     notification={{
                         placement: 'bottomRight',

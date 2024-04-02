@@ -93,6 +93,11 @@ function DashboardLayout() {
                 <Menu
                     theme='light'
                     mode='inline'
+                    onSelect={() => {
+                        if (screens.xs) {
+                            setCollapsed((prev) => !prev)
+                        }
+                    }}
                     items={[
                         {
                             key: '/dashboard',

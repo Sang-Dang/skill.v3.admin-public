@@ -1,4 +1,6 @@
+import { projectQueryKeys } from '@/api/projects/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
+import RefreshButton from '@/common/components/ReloadButton'
 import { ProjectStatus } from '@/lib/enum/project-status.enum'
 import { Role } from '@/lib/enum/role.enum'
 import ProjectsByStatusTable from '@/routes/_dashboard-layout/projects/-components/ProjectsByStatusTable'
@@ -69,6 +71,7 @@ function ProjectsComponent() {
                         },
                     })
                 }}
+                tabBarExtraContent={<RefreshButton queryKey={projectQueryKeys.GetAll()} />}
                 destroyInactiveTabPane
                 items={[
                     {

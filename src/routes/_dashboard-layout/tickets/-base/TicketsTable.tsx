@@ -1,8 +1,8 @@
 import ContentWrapper, { ContentCardProps } from '@/common/components/ContentWrapper'
+import TableActionsButton from '@/common/components/TableActionsButton'
 import { TicketModel } from '@/lib/model/ticket.model'
-import { DeleteOutlined, IdcardOutlined } from '@ant-design/icons'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Dropdown, Pagination, Table } from 'antd'
+import { Grid, Pagination, Table } from 'antd'
 import dayjs from 'dayjs'
 
 type ProjectTableProps = {
@@ -16,7 +16,7 @@ type ProjectTableProps = {
 
 export default function TicketsTable({ page, limit, isLoading, tickets, tableWrapperProps, paginationWrapperProps }: ProjectTableProps) {
     const navigate = useNavigate()
-    const { message } = App.useApp()
+    const screens = Grid.useBreakpoint()
 
     return (
         <>
@@ -74,47 +74,10 @@ export default function TicketsTable({ page, limit, isLoading, tickets, tableWra
                         },
                         {
                             key: 'ticketsTable-action',
-                            title: 'Action',
-                            width: 150,
+                            title: screens.xs ? 'Atn.' : 'Action',
                             fixed: 'right',
-                            render: (_, record) => (
-                                <Dropdown.Button
-                                    style={{
-                                        float: 'right',
-                                        display: 'inline',
-                                    }}
-                                    size='middle'
-                                    menu={{
-                                        items: [
-                                            {
-                                                label: 'Copy ID',
-                                                key: 'tickets-copyId',
-                                                onClick: () => {
-                                                    navigator.clipboard.writeText(record.id)
-                                                    message.success('ID copied to clipboard')
-                                                },
-                                                icon: <IdcardOutlined />,
-                                            },
-                                            {
-                                                label: 'Delete',
-                                                key: 'tickets-deleteBtn',
-                                                icon: <DeleteOutlined />,
-                                                danger: true,
-                                            },
-                                        ],
-                                    }}
-                                    onClick={() =>
-                                        navigate({
-                                            to: '/tickets/$id',
-                                            params: {
-                                                id: record.id,
-                                            },
-                                        })
-                                    }
-                                >
-                                    View
-                                </Dropdown.Button>
-                            ),
+                            width: screens.xs ? 65 : 130,
+                            render: (_, record) => <TableActionsButton record={record} viewLink='/tickets/$id' />,
                         },
                     ]}
                     pagination={false}

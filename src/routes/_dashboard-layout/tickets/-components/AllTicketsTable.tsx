@@ -11,7 +11,7 @@ type ProjectTableProps = {
 
 export default function AllTicketsTable({ page, limit }: ProjectTableProps) {
     const tickets = useQuery({
-        queryKey: ticketsQueryKeys.GetAll,
+        queryKey: ticketsQueryKeys.GetAll(),
         queryFn: () => Tickets_GetAll(),
         select: (res) => {
             const processedData = res.data

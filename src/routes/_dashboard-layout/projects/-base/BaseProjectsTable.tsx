@@ -1,8 +1,8 @@
 import ContentWrapper from '@/common/components/ContentWrapper'
+import TableActionsButton from '@/common/components/TableActionsButton'
 import { ProjectModel } from '@/lib/model/project.model'
-import { DeleteOutlined, IdcardOutlined } from '@ant-design/icons'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Dropdown, Pagination, Table, theme } from 'antd'
+import { Grid, Pagination, Table, theme } from 'antd'
 import dayjs from 'dayjs'
 
 type ProjectTableProps = {
@@ -14,8 +14,8 @@ type ProjectTableProps = {
 
 export default function BaseProjectsTable({ page, limit, projects, isLoading }: ProjectTableProps) {
     const navigate = useNavigate()
-    const { message } = App.useApp()
     const { token } = theme.useToken()
+    const screens = Grid.useBreakpoint()
 
     return (
         <>
@@ -59,47 +59,10 @@ export default function BaseProjectsTable({ page, limit, projects, isLoading }: 
                         },
                         {
                             key: 'projectsTable-action',
-                            title: 'Action',
-                            width: 150,
+                            title: screens.xs ? 'Atn.' : 'Action',
                             fixed: 'right',
-                            render: (_, record) => (
-                                <Dropdown.Button
-                                    style={{
-                                        float: 'right',
-                                        display: 'inline',
-                                    }}
-                                    size='middle'
-                                    menu={{
-                                        items: [
-                                            {
-                                                label: 'Copy ID',
-                                                key: 'projects-copyId',
-                                                onClick: () => {
-                                                    navigator.clipboard.writeText(record.id)
-                                                    message.success('ID copied to clipboard')
-                                                },
-                                                icon: <IdcardOutlined />,
-                                            },
-                                            {
-                                                label: 'Delete',
-                                                key: 'projects-deleteBtn',
-                                                icon: <DeleteOutlined />,
-                                                danger: true,
-                                            },
-                                        ],
-                                    }}
-                                    onClick={() =>
-                                        navigate({
-                                            to: '/projects/$id',
-                                            params: {
-                                                id: record.id,
-                                            },
-                                        })
-                                    }
-                                >
-                                    View
-                                </Dropdown.Button>
-                            ),
+                            width: screens.xs ? 65 : 130,
+                            render: (_, record) => <TableActionsButton record={record} viewLink='/projects/$id' />,
                         },
                     ]}
                     pagination={false}

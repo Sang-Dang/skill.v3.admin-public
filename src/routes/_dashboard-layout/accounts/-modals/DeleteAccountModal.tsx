@@ -41,7 +41,7 @@ export default function DeleteAccountModal({ children }: DeleteAccountModalProps
         onSuccess: () => {
             message.success('Account Deleted Successfully.')
             queryCLient.invalidateQueries({
-                queryKey: accountQueryKeys.GetAll,
+                queryKey: accountQueryKeys.GetAll(),
             })
         },
         onSettled: () => {
