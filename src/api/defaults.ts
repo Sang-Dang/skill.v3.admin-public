@@ -1,8 +1,8 @@
-import { fromEnv } from "@/config/env.config"
-import axios from "axios"
+import { fromEnv } from '@/config/env.config'
+import axios from 'axios'
 
 axios.defaults.baseURL = fromEnv.APP_BACKEND_URL
-axios.defaults.responseType = "json"
+axios.defaults.responseType = 'json'
 axios.defaults.validateStatus = (status) => {
     switch (status) {
         case 200:
@@ -15,45 +15,25 @@ axios.defaults.validateStatus = (status) => {
 }
 
 axios.interceptors.request.use(
-    (config) => {
-        devLog(
-            `%cRequest`,
-            "font-weight: bold; color: green;",
-            ` to ${config.url} (${config.auth ? "🔒" : "🔓"}). ${config.data ? "Payload:" : ""}`,
-            config.data ? config.data : ""
-        )
+    function (config) {
+        devLog(`Request to ${config.url} (${config.auth ? '🔒' : '🔓'}). ${config.data ? 'Payload:' : ''}`, config.data ? config.data : '')
 
         return config
     },
-    (error) => {
-        devLog(
-            "%cError",
-            "font-weight: bold; color: red;",
-            " while sending request",
-            error
-        )
+    function (error) {
+        devLog('Error while sending request', error)
         throw error
-    }
+    },
 )
 
 axios.interceptors.response.use(
-    (response) => {
-        devLog(
-            `%cResponse`,
-            "font-weight: bold; color: green;",
-            ` from ${response.config.url}. ${response.data ? "Response body:" : ""}`,
-            response.data ? response.data : ""
-        )
+    function (response) {
+        devLog(`Response from ${response.config.url}. ${response.data ? 'Response body:' : ''}`, response.data ? response.data : '')
 
         return response
     },
-    (error) => {
-        devLog(
-            "%cError",
-            "font-weight: bold; color: red;",
-            " while receiving response",
-            error
-        )
+    function (error) {
+        devLog('Error while receiving response', error)
         throw error
-    }
+    },
 )

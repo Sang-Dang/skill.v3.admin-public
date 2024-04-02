@@ -1,13 +1,23 @@
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from 'dayjs'
 
-export class BaseModel {
+export interface IBase {
     id: string
+    key: string
+    createdAt: Dayjs
+    updatedAt: Dayjs
+    deletedAt: Dayjs | null
+}
+
+export class BaseModel implements IBase {
+    id: string
+    key: string
     createdAt: Dayjs
     updatedAt: Dayjs
     deletedAt: Dayjs | null
 
-    constructor(data: BaseModel) {
+    constructor(data: IBase) {
         this.id = data.id
+        this.key = data.id
         this.createdAt = data.createdAt
         this.updatedAt = data.updatedAt
         this.deletedAt = data.deletedAt
@@ -16,9 +26,20 @@ export class BaseModel {
     static fromJSON(record: Record<string, any>) {
         return new BaseModel({
             id: record.id,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
-            deletedAt: record.deletedAt === null ? null : record.deletedAt,
+            key: record.id,
+            createdAt: dayjs(record.createdAt),
+            updatedAt: dayjs(record.updatedAt),
+            deletedAt: record.deletedAt === null ? null : dayjs(record.deletedAt),
         })
+    }
+
+    static serialize(model: BaseModel): { [key in keyof IBase]: string } {
+        return {
+            id: model.id,
+            key: model.id,
+            createdAt: model.createdAt.format(),
+            updatedAt: model.updatedAt.format(),
+            deletedAt: model.deletedAt?.format() ?? '',
+        }
     }
 }

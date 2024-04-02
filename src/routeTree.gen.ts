@@ -12,9 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboard-layout'
-import { Route as R404Import } from './routes/__404'
 import { Route as IndexImport } from './routes/index'
+import { Route as TestIndexImport } from './routes/test/index'
+import { Route as DashboardLayoutTicketsIndexImport } from './routes/_dashboard-layout/tickets/index'
+import { Route as DashboardLayoutProjectsIndexImport } from './routes/_dashboard-layout/projects/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboard-layout/dashboard/index'
+import { Route as DashboardLayoutAccountsIndexImport } from './routes/_dashboard-layout/accounts/index'
+import { Route as DashboardLayoutTicketsCreateImport } from './routes/_dashboard-layout/tickets/create'
+import { Route as DashboardLayoutTicketsIdImport } from './routes/_dashboard-layout/tickets/$id'
+import { Route as DashboardLayoutProjectsCreateImport } from './routes/_dashboard-layout/projects/create'
+import { Route as DashboardLayoutProjectsIdImport } from './routes/_dashboard-layout/projects/$id'
+import { Route as DashboardLayoutAccountsCreateImport } from './routes/_dashboard-layout/accounts/create'
+import { Route as DashboardLayoutAccountsIdImport } from './routes/_dashboard-layout/accounts/$id'
+import { Route as DashboardLayoutTicketsOrdersIndexImport } from './routes/_dashboard-layout/tickets/orders/index'
 
 // Create/Update Routes
 
@@ -23,19 +33,76 @@ const DashboardLayoutRoute = DashboardLayoutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const R404Route = R404Import.update({
-  id: '/__404',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
+const TestIndexRoute = TestIndexImport.update({
+  path: '/test/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardLayoutTicketsIndexRoute =
+  DashboardLayoutTicketsIndexImport.update({
+    path: '/tickets/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutProjectsIndexRoute =
+  DashboardLayoutProjectsIndexImport.update({
+    path: '/projects/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
     path: '/dashboard/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutAccountsIndexRoute =
+  DashboardLayoutAccountsIndexImport.update({
+    path: '/accounts/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutTicketsCreateRoute =
+  DashboardLayoutTicketsCreateImport.update({
+    path: '/tickets/create',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutTicketsIdRoute = DashboardLayoutTicketsIdImport.update({
+  path: '/tickets/$id',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutProjectsCreateRoute =
+  DashboardLayoutProjectsCreateImport.update({
+    path: '/projects/create',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutProjectsIdRoute = DashboardLayoutProjectsIdImport.update({
+  path: '/projects/$id',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutAccountsCreateRoute =
+  DashboardLayoutAccountsCreateImport.update({
+    path: '/accounts/create',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutAccountsIdRoute = DashboardLayoutAccountsIdImport.update({
+  path: '/accounts/$id',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutTicketsOrdersIndexRoute =
+  DashboardLayoutTicketsOrdersIndexImport.update({
+    path: '/tickets/orders/',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
 
@@ -47,16 +114,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/__404': {
-      preLoaderRoute: typeof R404Import
-      parentRoute: typeof rootRoute
-    }
     '/_dashboard-layout': {
       preLoaderRoute: typeof DashboardLayoutImport
       parentRoute: typeof rootRoute
     }
+    '/test/': {
+      preLoaderRoute: typeof TestIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_dashboard-layout/accounts/$id': {
+      preLoaderRoute: typeof DashboardLayoutAccountsIdImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/accounts/create': {
+      preLoaderRoute: typeof DashboardLayoutAccountsCreateImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/projects/$id': {
+      preLoaderRoute: typeof DashboardLayoutProjectsIdImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/projects/create': {
+      preLoaderRoute: typeof DashboardLayoutProjectsCreateImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/tickets/$id': {
+      preLoaderRoute: typeof DashboardLayoutTicketsIdImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/tickets/create': {
+      preLoaderRoute: typeof DashboardLayoutTicketsCreateImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/accounts/': {
+      preLoaderRoute: typeof DashboardLayoutAccountsIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
     '/_dashboard-layout/dashboard/': {
       preLoaderRoute: typeof DashboardLayoutDashboardIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/projects/': {
+      preLoaderRoute: typeof DashboardLayoutProjectsIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/tickets/': {
+      preLoaderRoute: typeof DashboardLayoutTicketsIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/tickets/orders/': {
+      preLoaderRoute: typeof DashboardLayoutTicketsOrdersIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
   }
@@ -66,7 +173,20 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  DashboardLayoutRoute.addChildren([DashboardLayoutDashboardIndexRoute]),
+  DashboardLayoutRoute.addChildren([
+    DashboardLayoutAccountsIdRoute,
+    DashboardLayoutAccountsCreateRoute,
+    DashboardLayoutProjectsIdRoute,
+    DashboardLayoutProjectsCreateRoute,
+    DashboardLayoutTicketsIdRoute,
+    DashboardLayoutTicketsCreateRoute,
+    DashboardLayoutAccountsIndexRoute,
+    DashboardLayoutDashboardIndexRoute,
+    DashboardLayoutProjectsIndexRoute,
+    DashboardLayoutTicketsIndexRoute,
+    DashboardLayoutTicketsOrdersIndexRoute,
+  ]),
+  TestIndexRoute,
 ])
 
 /* prettier-ignore-end */

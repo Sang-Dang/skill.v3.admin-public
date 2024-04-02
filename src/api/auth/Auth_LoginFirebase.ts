@@ -1,20 +1,17 @@
-import { transformRes } from "@/api/utils"
-import axios from "axios"
+import { transformRes } from '@/api/utils'
+import axios from 'axios'
 
-export type Auth_LoginFirebase_Req = {
-    authorization: string
+type Request = {
+    firebase: string
 }
+type Response = string
 
-export type Auth_LoginFirebase_Res = string
-
-export async function Auth_LoginFirebase(req: Auth_LoginFirebase_Req) {
-    return axios.post<Auth_LoginFirebase_Res>("/auth/login-firebase", req, {
-        transformResponse: [
-            (data) =>
-                transformRes(data, undefined, (error) => {
-                    throw new Error(error.message)
-                }),
-        ],
+export async function Auth_LoginFirebase(req: Request) {
+    return axios.post<Response>('/auth/login-firebase', undefined, {
+        headers: {
+            Authorization: req.firebase,
+        },
+        transformResponse: [(data) => transformRes(data)],
         validateStatus(status) {
             switch (status) {
                 case 200:
@@ -22,7 +19,7 @@ export async function Auth_LoginFirebase(req: Auth_LoginFirebase_Req) {
                 case 500: // when bad token
                     return true
                 default:
-                    throw new Error("Look inside Auth_LoginFirebase")
+                    return false
             }
         },
     })

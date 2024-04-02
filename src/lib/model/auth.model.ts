@@ -1,14 +1,22 @@
-import { Role } from "@/lib/enum/role.enum"
-import { BaseModel } from "@/lib/model/base.model"
+import { Role } from '@/lib/enum/role.enum'
+import { BaseModel, IBase } from '@/lib/model/base.model'
 
-export class AuthModel extends BaseModel {
+interface IAuth extends IBase {
+    username: string
+    email: string
+    phone: string
+    password: string
+    role: Role
+}
+
+export class AuthModel extends BaseModel implements IAuth {
     username: string
     email: string
     phone: string
     password: string
     role: Role
 
-    constructor(data: AuthModel) {
+    constructor(data: IAuth) {
         super(data)
         this.username = data.username
         this.email = data.email
@@ -26,5 +34,20 @@ export class AuthModel extends BaseModel {
             password: record.password,
             role: record.role,
         })
+    }
+
+    static fromJSONList(records: Record<string, any>[]): AuthModel[] {
+        return records.map((record) => AuthModel.fromJSON(record))
+    }
+
+    static serialize(model: AuthModel): { [key in keyof IAuth]: string } {
+        return {
+            ...BaseModel.serialize(model),
+            username: model.username,
+            email: model.email,
+            phone: model.phone,
+            password: model.password,
+            role: model.role,
+        }
     }
 }

@@ -1,15 +1,14 @@
 import { transformRes } from "@/api/utils"
 import axios from "axios"
 
-export type Auth_Login_Req = {
+type Request = {
     email: string
     password: string
 }
+type Response = string // the jwt token
 
-export type Auth_Login_Res = string // the jwt token
-
-export async function Auth_Login(req: Auth_Login_Req) {
-    return axios.post<Auth_Login_Res>("/auth/login", req, {
+export async function Auth_Login(req: Request) {
+    return axios.post<Response>('/auth/login', req, {
         transformResponse: [(data) => transformRes(data)],
     })
 }
