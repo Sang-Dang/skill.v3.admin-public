@@ -14,14 +14,23 @@ export default function AccountsByRoleTable({ role, page, limit }: AccountTableP
     const accounts = useQuery({
         queryKey: accountQueryKeys.GetAllByRole(role),
         queryFn: () => Accounts_GetAllByRole({ role }),
-        select: (res) => {
-            const processedData = res.data.slice((page - 1) * limit, page * limit)
-            return {
-                list: processedData,
-                total: processedData.length,
-            }
-        },
+        select: (res) => ({
+            list: res.data,
+            total: res.data.length,
+        }),
     })
 
-    return <BaseAccountsTable isLoading={accounts.isLoading} page={page} limit={limit} accounts={accounts.data} />
+    return (
+        <BaseAccountsTable
+            isLoading={accounts.isLoading}
+            page={page}
+            limit={limit}
+            accounts={accounts.data}
+            tableWrapperProps={{
+                style: {
+                    borderTopLeftRadius: 0,
+                },
+            }}
+        />
+    )
 }

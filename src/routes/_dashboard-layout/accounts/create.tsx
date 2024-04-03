@@ -3,7 +3,6 @@ import { Accounts_GetAll } from '@/api/accounts/Accounts_GetAll'
 import { accountQueryKeys } from '@/api/accounts/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RoleTag from '@/common/components/RoleTag'
-import { useAuth } from '@/common/util/useAuth'
 import { Role } from '@/lib/enum/role.enum'
 import { useMutation } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
@@ -35,7 +34,6 @@ type FieldType = {
 
 function CreateAccountComponent() {
     const { message, notification } = App.useApp()
-    const auth = useAuth()
     const navigate = useNavigate()
     const account = Route.useLoaderData({ select: (res) => res.accounts })
     const [form] = Form.useForm<FieldType>()
@@ -81,10 +79,7 @@ function CreateAccountComponent() {
     })
 
     function handleSubmit(values: FieldType) {
-        createAccount.mutate({
-            payload: values,
-            token: auth.getToken(),
-        })
+        createAccount.mutate(values)
     }
 
     return (

@@ -1,6 +1,6 @@
 import BaseTable from '@/common/components/BaseTable'
 import { ContentCardProps } from '@/common/components/ContentWrapper'
-import { TicketModel } from '@/lib/model/ticket.model'
+import { TicketVoucherModel } from '@/lib/model/ticketVoucher.model'
 import { Grid, MenuProps, TableProps } from 'antd'
 import dayjs from 'dayjs'
 
@@ -8,66 +8,70 @@ type ProjectTableProps = {
     page: number
     limit: number
     isLoading: boolean
-    tickets: TableData<TicketModel> | undefined
+    vouchers: TableData<TicketVoucherModel> | undefined
     tableWrapperProps?: Partial<ContentCardProps>
-    appendActions?: (record: TicketModel) => MenuProps['items']
-    tableProps?: TableProps<TicketModel>
+    appendActions?: (record: TicketVoucherModel) => MenuProps['items']
+    tableProps?: TableProps<TicketVoucherModel>
 }
 
-export default function TicketsTable({ tableProps, page, limit, isLoading, tickets, tableWrapperProps, appendActions }: ProjectTableProps) {
+export default function BaseVouchersTable({
+    tableProps,
+    page,
+    limit,
+    isLoading,
+    vouchers,
+    tableWrapperProps,
+    appendActions,
+}: ProjectTableProps) {
     const screens = Grid.useBreakpoint()
 
     return (
         <BaseTable
             tableProps={tableProps}
-            isLoading={isLoading}
-            data={tickets}
-            page={page}
-            limit={limit}
+            data={vouchers}
             tableWrapperProps={tableWrapperProps}
+            isLoading={isLoading}
+            limit={limit}
+            page={page}
             columns={[
                 {
-                    key: 'ticketsTable-ticketName',
-                    title: 'Ticket Name',
-                    dataIndex: 'ticketName',
-                    width: 120,
+                    key: 'vouchersTable-voucherCode',
+                    title: 'Code',
+                    dataIndex: 'voucherCode',
+                    width: 200,
                     ellipsis: true,
                 },
                 {
-                    key: 'ticketsTable-price',
-                    title: 'Price',
-                    dataIndex: 'price',
-                    width: 100,
+                    key: 'vouchersTable-discount',
+                    title: 'Discount',
+                    dataIndex: 'discount',
+                    width: 150,
                     ellipsis: true,
                     render: (value: number) => `${value.toLocaleString()} VND`,
                 },
                 {
-                    key: 'ticketsTable-quantity',
+                    key: 'vouchersTable-quantity',
                     title: 'Quantity',
                     dataIndex: 'quantity',
-                    width: 100,
+                    width: 150,
                     ellipsis: true,
                     render: (value: number) => value.toLocaleString(),
                 },
                 {
-                    key: 'ticketsTable-startDate',
+                    key: 'vouchersTable-startDate',
                     title: 'Start Date',
                     dataIndex: 'startDate',
                     ellipsis: true,
                     render: (value) => dayjs(value).format('YYYY-MM-DD'),
                 },
                 {
-                    key: 'ticketsTable-endDate',
+                    key: 'vouchersTable-endDate',
                     title: 'End Date',
                     dataIndex: 'endDate',
                     ellipsis: true,
                     render: (value) => dayjs(value).format('YYYY-MM-DD'),
                 },
-                BaseTable.ColumnActions({
-                    screens,
-                    viewLink: '/tickets/$id',
-                    appendActions,
-                }),
+                BaseTable.ColumnActions<TicketVoucherModel>({ screens, viewLink: '/vouchers/$id', appendActions }),
             ]}
         />
     )

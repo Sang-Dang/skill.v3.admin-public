@@ -1,25 +1,27 @@
 import { transformRes } from '@/api/utils'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
-import { ProjectModel } from '@/lib/model/project.model'
+import { TicketVoucherModel } from '@/lib/model/ticketVoucher.model'
 import axios from 'axios'
 
-type Request = Pick<ProjectModel, 'id'>
-type Response = ProjectModel
+type Request = {
+    id: string
+}
+type Response = TicketVoucherModel
 
-export async function Project_GetById(req: Request) {
-    return axios.get<Response>(`/project/${req.id}`, {
+export async function TicketVoucher_GetById(request: Request) {
+    return axios.get<Response>(`/ticket-voucher/${encodeURIComponent(request.id)}`, {
         transformResponse: [
             (data) =>
                 transformRes(
                     data,
                     (res) => {
-                        const projectDumbList = ProjectModel.fromJSONList(res.data)
+                        const ticketDumbList = TicketVoucherModel.fromJSONList(res.data)
 
-                        if (projectDumbList.length === 0) {
-                            throw new ResourceNotFoundError('Project not found')
+                        if (ticketDumbList.length === 0) {
+                            throw new ResourceNotFoundError('Ticket not found')
                         }
 
-                        return projectDumbList[0]
+                        return ticketDumbList[0]
                     },
                     (error) => {
                         throw new ResourceNotFoundError(error.message)

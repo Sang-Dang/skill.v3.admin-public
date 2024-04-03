@@ -2,6 +2,7 @@ import { Role } from '@/lib/enum/role.enum'
 import { cn } from '@/lib/utils/cn'
 import {
     AccountBookOutlined,
+    CreditCardOutlined,
     DashboardOutlined,
     FileAddOutlined,
     IdcardOutlined,
@@ -49,7 +50,7 @@ function DashboardLayout() {
         >
             {screens.xs && !collapsed && (
                 <div
-                    className='fixed left-0 top-0 z-[999] h-screen w-screen cursor-pointer bg-black/20'
+                    className='fixed left-0 top-0 z-[999] min-h-screen w-screen cursor-pointer bg-black/20'
                     onClick={() => setCollapsed((prev) => !prev)}
                 ></div>
             )}
@@ -61,8 +62,8 @@ function DashboardLayout() {
                 collapsible
                 theme='light'
                 trigger={null}
-                width={screens.xs ? '225' : 256}
-                className={screens.xs ? 'absolute left-0 top-0 z-[1000] h-full rounded-r-xl' : ''}
+                width={screens.xs ? '225px' : '256px'}
+                className={cn('fixed left-0 top-0 z-[1000] h-screen', screens.xs ? ' h-full rounded-r-xl' : '')}
                 style={{
                     borderRight: '1px solid',
                     borderColor: token.colorBorderSecondary,
@@ -168,6 +169,23 @@ function DashboardLayout() {
                                 },
                             ],
                         },
+                        {
+                            key: 'vouchers',
+                            label: 'Vouchers',
+                            icon: <CreditCardOutlined />,
+                            children: [
+                                {
+                                    label: 'Voucher List',
+                                    key: '/vouchers',
+                                    icon: <UnorderedListOutlined />,
+                                },
+                                {
+                                    label: 'Create Voucher',
+                                    key: '/vouchers/create',
+                                    icon: <FileAddOutlined />,
+                                },
+                            ],
+                        },
                     ]}
                     onClick={(info) =>
                         navigate({
@@ -185,7 +203,7 @@ function DashboardLayout() {
                     onClick={() => setCollapsed((prev) => !prev)}
                 />
             </Sider>
-            <Layout>
+            <Layout className={cn('min-h-screen transition-all', !collapsed && !screens.xs && 'ml-[256px]')}>
                 <Outlet />
             </Layout>
         </Layout>

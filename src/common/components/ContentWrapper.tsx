@@ -2,8 +2,7 @@ import ProfileDropdown from '@/common/components/ProfileDropdown'
 import Head from '@/common/util/Head'
 import { useAuth } from '@/common/util/useAuth'
 import { UserOutlined } from '@ant-design/icons'
-import { ProCard } from '@ant-design/pro-components'
-import { Avatar, Breadcrumb, Button, CardProps, Flex, Grid, Layout, Space, Spin, theme, Typography } from 'antd'
+import { Avatar, Breadcrumb, Button, Card, CardProps, Flex, Grid, Layout, Space, Spin, theme, Typography } from 'antd'
 import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import { CSSProperties, ReactNode } from 'react'
 
@@ -80,7 +79,7 @@ export default function ContentWrapper({ children, title, breadcrumbs, headTitle
             </Header>
             <Content
                 style={{
-                    paddingInline: screens.md ? 'var(--page-padding-inline)' : 'var(--page-padding-inline-mobile)',
+                    paddingInline: screens.md ? 'var(--page-padding-inline)' : screens.xs ? '0' : 'var(--page-padding-inline-mobile)',
                     ...innerStyle,
                 }}
             >
@@ -99,9 +98,9 @@ ContentWrapper.ContentCard = ({ children, ...props }: ContentCardProps) => {
 
     if (props.useCard) {
         return (
-            <ProCard key={'card'} {...props.cardProps}>
+            <Card key={'card'} {...props.cardProps}>
                 {children}
-            </ProCard>
+            </Card>
         )
     } else {
         return (

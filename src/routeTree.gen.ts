@@ -14,10 +14,13 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboard-layout'
 import { Route as IndexImport } from './routes/index'
 import { Route as TestIndexImport } from './routes/test/index'
+import { Route as DashboardLayoutVouchersIndexImport } from './routes/_dashboard-layout/vouchers/index'
 import { Route as DashboardLayoutTicketsIndexImport } from './routes/_dashboard-layout/tickets/index'
 import { Route as DashboardLayoutProjectsIndexImport } from './routes/_dashboard-layout/projects/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboard-layout/dashboard/index'
 import { Route as DashboardLayoutAccountsIndexImport } from './routes/_dashboard-layout/accounts/index'
+import { Route as DashboardLayoutVouchersCreateImport } from './routes/_dashboard-layout/vouchers/create'
+import { Route as DashboardLayoutVouchersIdImport } from './routes/_dashboard-layout/vouchers/$id'
 import { Route as DashboardLayoutTicketsCreateImport } from './routes/_dashboard-layout/tickets/create'
 import { Route as DashboardLayoutTicketsIdImport } from './routes/_dashboard-layout/tickets/$id'
 import { Route as DashboardLayoutProjectsCreateImport } from './routes/_dashboard-layout/projects/create'
@@ -43,6 +46,12 @@ const TestIndexRoute = TestIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DashboardLayoutVouchersIndexRoute =
+  DashboardLayoutVouchersIndexImport.update({
+    path: '/vouchers/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
 const DashboardLayoutTicketsIndexRoute =
   DashboardLayoutTicketsIndexImport.update({
     path: '/tickets/',
@@ -66,6 +75,17 @@ const DashboardLayoutAccountsIndexRoute =
     path: '/accounts/',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
+
+const DashboardLayoutVouchersCreateRoute =
+  DashboardLayoutVouchersCreateImport.update({
+    path: '/vouchers/create',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutVouchersIdRoute = DashboardLayoutVouchersIdImport.update({
+  path: '/vouchers/$id',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
 
 const DashboardLayoutTicketsCreateRoute =
   DashboardLayoutTicketsCreateImport.update({
@@ -146,6 +166,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutTicketsCreateImport
       parentRoute: typeof DashboardLayoutImport
     }
+    '/_dashboard-layout/vouchers/$id': {
+      preLoaderRoute: typeof DashboardLayoutVouchersIdImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/vouchers/create': {
+      preLoaderRoute: typeof DashboardLayoutVouchersCreateImport
+      parentRoute: typeof DashboardLayoutImport
+    }
     '/_dashboard-layout/accounts/': {
       preLoaderRoute: typeof DashboardLayoutAccountsIndexImport
       parentRoute: typeof DashboardLayoutImport
@@ -160,6 +188,10 @@ declare module '@tanstack/react-router' {
     }
     '/_dashboard-layout/tickets/': {
       preLoaderRoute: typeof DashboardLayoutTicketsIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboard-layout/vouchers/': {
+      preLoaderRoute: typeof DashboardLayoutVouchersIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
     '/_dashboard-layout/tickets/orders/': {
@@ -180,10 +212,13 @@ export const routeTree = rootRoute.addChildren([
     DashboardLayoutProjectsCreateRoute,
     DashboardLayoutTicketsIdRoute,
     DashboardLayoutTicketsCreateRoute,
+    DashboardLayoutVouchersIdRoute,
+    DashboardLayoutVouchersCreateRoute,
     DashboardLayoutAccountsIndexRoute,
     DashboardLayoutDashboardIndexRoute,
     DashboardLayoutProjectsIndexRoute,
     DashboardLayoutTicketsIndexRoute,
+    DashboardLayoutVouchersIndexRoute,
     DashboardLayoutTicketsOrdersIndexRoute,
   ]),
   TestIndexRoute,

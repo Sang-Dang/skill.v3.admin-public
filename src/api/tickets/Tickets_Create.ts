@@ -2,7 +2,7 @@ import { transformRes } from '@/api/utils'
 import { TicketModel } from '@/lib/model/ticket.model'
 import axios from 'axios'
 
-type Request = Pick<TicketModel, 'ticketName' | 'description' | 'price' | 'quantity' | 'startDate' | 'endDate'>
+type Request = Pick<TicketModel, 'ticketName' | 'description' | 'price' | 'quantity' | 'startDate' | 'endDate' | 'project'>
 type Response = TicketModel
 
 export async function Tickets_Create(req: Request) {

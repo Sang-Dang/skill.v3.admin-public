@@ -1,5 +1,6 @@
 export const ticketsQueryKeys = {
     GetAll: () => ['tickets'],
     GetById: (id: string) => ['tickets', id],
-    GetByProjectId: (projectId: string) => ['tickets', projectId],
+    GetAllByProjectId: (projectId: string) => ['tickets', projectId],
+    GetManyById: (ids: string[]) => ['tickets', ids],
 }

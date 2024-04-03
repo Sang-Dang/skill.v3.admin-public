@@ -9,9 +9,10 @@ type Props = {
     filters?: Omit<QueryFilters, 'queryKey'>
     options?: ResetOptions
     hideTextOnMobile?: boolean
+    noText?: boolean
 }
 
-export default function RefreshButton({ queryKey, buttonProps, filters, options, hideTextOnMobile = true }: Props) {
+export default function RefreshButton({ queryKey, buttonProps, filters, options, hideTextOnMobile = true, noText = false }: Props) {
     const queryClient = useQueryClient()
     const [isLoading, setIsLoading] = useState(false)
     const screens = Grid.useBreakpoint()
@@ -33,7 +34,7 @@ export default function RefreshButton({ queryKey, buttonProps, filters, options,
     return (
         <Tooltip title='Refresh Data'>
             <Button onClick={reload} icon={<ReloadOutlined />} loading={isLoading} {...buttonProps}>
-                {hideTextOnMobile && screens.xs ? '' : 'Refresh'}
+                {hideTextOnMobile && screens.xs ? '' : noText ? '' : 'Refresh'}
             </Button>
         </Tooltip>
     )

@@ -1,9 +1,10 @@
 import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_GetAll } from '@/api/projects/Project_GetAll'
+import { ticketsQueryKeys } from '@/api/tickets/key.query'
 import { Tickets_Create } from '@/api/tickets/Tickets_Create'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import { ProFormDateRangePicker, ProFormDigit, ProFormMoney, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
 import { App, Button, Flex, Form } from 'antd'
 import { Dayjs } from 'dayjs'
@@ -36,6 +37,7 @@ function CreateTicketComponent() {
     const navigate = useNavigate()
     const [form] = Form.useForm<FieldType>()
     const projects = Route.useLoaderData({ select: (res) => res.projects })
+    const queryClient = useQueryClient()
 
     const createTicket = useMutation({
         mutationFn: Tickets_Create,
@@ -67,6 +69,7 @@ function CreateTicketComponent() {
                     </Button>
                 ),
             })
+            queryClient.resetQueries({ queryKey: ticketsQueryKeys.GetAll() })
             form.resetFields()
         },
         onError: (error) => {
@@ -141,7 +144,7 @@ function CreateTicketComponent() {
                                         showSearch: true,
                                     }}
                                 />
-                                <Flex gap={24}>
+                                <div className='grid grid-cols-1 gap-0 sm:grid-cols-3 sm:gap-5'>
                                     <ProFormDateRangePicker
                                         name='duration'
                                         label='Ticket Duration'
@@ -154,6 +157,10 @@ function CreateTicketComponent() {
                                         fieldProps={{
                                             size: 'large',
                                             placeholder: ['Start Date', 'End Date'],
+                                            className: 'w-full',
+                                        }}
+                                        formItemProps={{
+                                            rootClassName: 'w-full',
                                         }}
                                     />
                                     <ProFormMoney
@@ -193,7 +200,7 @@ function CreateTicketComponent() {
                                             },
                                         ]}
                                     />
-                                </Flex>
+                                </div>
                                 <ProFormTextArea
                                     name='description'
                                     label='Description'

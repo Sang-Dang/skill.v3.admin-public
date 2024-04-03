@@ -7,7 +7,7 @@ type HeadProps = {
 export default function Head({ title }: HeadProps) {
     return (
         <Helmet>
-            <title>{title} | Skirio Admin</title>
+            <title>{title} | Skira Admin</title>
         </Helmet>
     )
 }

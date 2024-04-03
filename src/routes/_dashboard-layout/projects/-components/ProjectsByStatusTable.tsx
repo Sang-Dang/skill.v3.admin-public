@@ -14,15 +14,23 @@ export default function ProjectsByStatusTable({ page, limit, status }: ProjectTa
     const projects = useQuery({
         queryKey: projectQueryKeys.GetAllByStatus(status),
         queryFn: () => Project_GetAllByStatus({ status }),
-        select: (res) => {
-            const data = res.data.slice((page - 1) * limit, page * limit)
-
-            return {
-                list: data,
-                total: data.length,
-            }
-        },
+        select: (res) => ({
+            list: res.data,
+            total: res.data.length,
+        }),
     })
 
-    return <BaseProjectsTable isLoading={projects.isLoading} page={page} limit={limit} projects={projects.data} />
+    return (
+        <BaseProjectsTable
+            isLoading={projects.isLoading}
+            page={page}
+            limit={limit}
+            projects={projects.data}
+            tableWrapperProps={{
+                style: {
+                    borderTopLeftRadius: 0,
+                },
+            }}
+        />
+    )
 }

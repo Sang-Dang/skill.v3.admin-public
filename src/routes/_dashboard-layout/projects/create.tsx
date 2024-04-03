@@ -2,9 +2,10 @@ import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_Create } from '@/api/projects/Project_Create'
 import { Project_GetAll } from '@/api/projects/Project_GetAll'
 import ContentWrapper from '@/common/components/ContentWrapper'
+import { ProFormDateRangePicker } from '@ant-design/pro-components'
 import { useMutation } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
-import { App, Button, DatePicker, Flex, Form, Input } from 'antd'
+import { App, Button, Flex, Form, Input } from 'antd'
 import { Dayjs } from 'dayjs'
 
 export const Route = createFileRoute('/_dashboard-layout/projects/create')({
@@ -104,14 +105,14 @@ function CreateProjectComponent() {
                     <Await promise={projects} fallback={<ContentWrapper.LoadingCard />}>
                         {(projects) => (
                             <>
-                                <Flex gap={12}>
+                                <div className='grid grid-cols-1 gap-0 sm:grid-cols-3 sm:gap-5'>
                                     <Form.Item<FieldType>
                                         name='projectName'
                                         label='Project Name'
                                         hasFeedback
                                         validateDebounce={500}
                                         validateFirst
-                                        className='w-full'
+                                        className='col-span-2 w-full'
                                         tooltip='This is the name of the project. It must be unique.'
                                         rules={[
                                             {
@@ -134,19 +135,24 @@ function CreateProjectComponent() {
                                     >
                                         <Input size='large' />
                                     </Form.Item>
-                                    <Form.Item<FieldType>
+                                    <ProFormDateRangePicker
                                         name='dateRange'
                                         label='Project Timespan'
-                                        tooltip='When does the project start and end?'
+                                        className='w-full'
                                         rules={[
                                             {
                                                 required: true,
                                             },
                                         ]}
-                                    >
-                                        <DatePicker.RangePicker size='large' />
-                                    </Form.Item>
-                                </Flex>
+                                        tooltip='Please provide the start and end date of the project.'
+                                        fieldProps={{
+                                            size: 'large',
+                                            placeholder: ['Start Date', 'End Date'],
+                                            className: 'w-full',
+                                        }}
+                                        formItemProps={{}}
+                                    />
+                                </div>
                                 <Form.Item<FieldType>
                                     name='description'
                                     label='Description'

@@ -64,8 +64,8 @@ export function AccountsComponent() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            page: undefined,
-                            limit: undefined,
+                            ticketsPage: undefined,
+                            ticketsLimit: undefined,
                             tab: key,
                         },
                     })

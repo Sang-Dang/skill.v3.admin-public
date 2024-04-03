@@ -1,5 +1,5 @@
 import { transformRes } from '@/api/utils'
-import { NotFoundError } from '@/lib/errors/NotFoundError'
+import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
 import { TicketModel } from '@/lib/model/ticket.model'
 import axios from 'axios'
 
@@ -16,13 +16,13 @@ export async function Tickets_GetById(req: Request) {
                         const ticketDumbList = TicketModel.fromJSONList(res.data)
 
                         if (ticketDumbList.length === 0) {
-                            throw new NotFoundError('Ticket not found')
+                            throw new ResourceNotFoundError('Ticket not found')
                         }
 
                         return ticketDumbList[0]
                     },
                     (error) => {
-                        throw new NotFoundError(error.message)
+                        throw new ResourceNotFoundError(error.message)
                     },
                 ),
         ],

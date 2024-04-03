@@ -8,7 +8,11 @@ export default {
     },
     important: true,
     theme: {
-        extend: {},
+        extend: {
+            screens: {
+                xs: '576px',
+            },
+        },
     },
     plugins: [forms],
 }

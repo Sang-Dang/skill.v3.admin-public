@@ -7,6 +7,7 @@ import { QueryClient } from '@tanstack/react-query'
 import { AuthContextProvider } from '@/common/context/AuthContext'
 import { authHandler } from '@/router'
 import { Suspense } from 'react'
+import { enUSIntl } from '@ant-design/pro-components'
 
 type RootContext = {
     authHandler: AuthHandler
@@ -30,6 +31,7 @@ function RootComponent() {
                         Button: {},
                     },
                 }}
+                locale={enUSIntl}
             >
                 <App
                     notification={{
