@@ -16,7 +16,10 @@ axios.defaults.validateStatus = (status) => {
 
 axios.interceptors.request.use(
     function (config) {
-        devLog(`Request to ${config.url} (${config.auth ? '🔒' : '🔓'}). ${config.data ? 'Payload:' : ''}`, config.data ? config.data : '')
+        devLog(
+            `${config.method} Request to ${config.url} (${config.auth ? '🔒' : '🔓'}). ${config.data ? 'Payload:' : ''}`,
+            config.data ? config.data : '',
+        )
 
         return config
     },

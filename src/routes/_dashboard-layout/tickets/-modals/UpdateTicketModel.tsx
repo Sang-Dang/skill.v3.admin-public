@@ -1,5 +1,5 @@
 import { ticketsQueryKeys } from '@/api/tickets/key.query'
-import { Ticket_Update } from '@/api/tickets/Ticket_Update'
+import { Tickets_Update } from '@/api/tickets/Tickets_Update'
 import { Tickets_GetById } from '@/api/tickets/Tickets_GetById'
 import { ProFormDateRangePicker, ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -41,7 +41,7 @@ export default function UpdateTicketModal({ children, afterSuccess }: Props) {
     })
 
     const updateTicket = useMutation({
-        mutationFn: Ticket_Update,
+        mutationFn: Tickets_Update,
         onMutate: () => {
             message.open({
                 type: 'loading',

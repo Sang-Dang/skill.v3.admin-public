@@ -1,18 +1,21 @@
+import { ticketsQueryKeys } from '@/api/tickets/key.query'
 import { Tickets_GetAllByProjectId } from '@/api/tickets/Tickets_GetAllByProjectId'
 import { ticketVoucherQueryKeys } from '@/api/tickets/voucher/key.query'
 import { TicketVoucher_Create } from '@/api/tickets/voucher/TicketVoucher_Create'
 import { TicketVoucher_GetAllByProjectId } from '@/api/tickets/voucher/TicketVoucher_GetAllByProjectId'
+import { TicketVoucher_GetById } from '@/api/tickets/voucher/TicketVoucher_GetById'
+import { TicketVoucher_Update } from '@/api/tickets/voucher/TicketVoucher_Update'
 import { ProFormDateRangePicker, ProFormDigit, ProFormMoney, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { App, Button, Form, Modal } from 'antd'
-import { Dayjs } from 'dayjs'
-import { ReactNode, useState } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
+import { ReactNode, useEffect, useState } from 'react'
 
 type CreateFormFieldType = {
-    voucherName: string
+    voucherCode: string
     description: string
-    price: number
+    discount: number
     quantity: number
     note: string
     applyTicketId: string[]
@@ -20,20 +23,36 @@ type CreateFormFieldType = {
 }
 
 type handleOpenProps = {
-    handleOpen: (projectId: string) => void
+    handleOpenCreate: (projectId: string) => void
+    handleOpenUpdate: (voucherId: string) => void
 }
 
 type Props = {
     children: (props: handleOpenProps) => ReactNode
 }
 
-export default function CreateVoucherModal({ children }: Props) {
+export default function CreateOrUpdateVoucherModal({ children }: Props) {
     const [open, setOpen] = useState(false)
     const [projectId, setProjectId] = useState<string | undefined>(undefined)
+    const [voucherId, setVoucherId] = useState<string | undefined>(undefined)
     const { message, notification } = App.useApp()
     const navigate = useNavigate()
     const [form] = Form.useForm<CreateFormFieldType>()
     const queryClient = useQueryClient()
+
+    const tickets = useQuery({
+        queryKey: ticketsQueryKeys.GetAllByProjectId(projectId!),
+        queryFn: () => Tickets_GetAllByProjectId({ projectId: projectId! }),
+        enabled: projectId !== undefined,
+        select: (res) => res.data.map((t) => ({ label: t.ticketName, value: t.id, key: t.id })),
+    })
+
+    const voucher = useQuery({
+        queryKey: ticketVoucherQueryKeys.GetById(voucherId!),
+        queryFn: () => TicketVoucher_GetById({ id: voucherId! }),
+        enabled: voucherId !== undefined,
+        select: (res) => res.data,
+    })
 
     const createVoucher = useMutation({
         mutationFn: TicketVoucher_Create,
@@ -56,65 +75,139 @@ export default function CreateVoucherModal({ children }: Props) {
         },
     })
 
-    function handleOpen(projectId: string) {
+    const updateVoucher = useMutation({
+        mutationFn: TicketVoucher_Update,
+        onMutate: () => {
+            message.open({
+                type: 'loading',
+                content: 'Updating Voucher...',
+                key: 'msg-update-voucher',
+            })
+        },
+        onSettled: () => {
+            message.destroy('msg-update-voucher')
+        },
+        onSuccess: () => {
+            queryClient.resetQueries({ queryKey: ticketVoucherQueryKeys.GetAll() })
+        },
+        onError: (error) => {
+            devLog(error)
+            message.error('Voucher Updation Failed, please try again.')
+        },
+    })
+
+    useEffect(() => {
+        if (voucher.isSuccess) {
+            form.setFieldsValue({
+                voucherCode: voucher.data.voucherCode,
+                discount: voucher.data.discount,
+                quantity: voucher.data.quantity,
+                note: voucher.data.note ?? undefined,
+                applyTicketId: voucher.data.applyTicketId,
+                duration: [dayjs(voucher.data.startDate), dayjs(voucher.data.endDate)],
+            })
+            setProjectId(voucher.data.project)
+        }
+    }, [form, voucher.data, voucher.isSuccess])
+
+    function handleOpenCreate(projectId: string) {
         setProjectId(projectId)
+        setOpen(true)
+    }
+
+    function handleOpenUpdate(voucherId: string) {
+        setVoucherId(voucherId)
         setOpen(true)
     }
 
     function handleClose() {
         setOpen(false)
         setProjectId(undefined)
+        setVoucherId(undefined)
         form.resetFields()
     }
 
     function handleSubmit() {
         const values = form.getFieldsValue(true)
-        createVoucher.mutate(
-            {
-                ...values,
-                project: projectId,
-                startDate: values.duration[0],
-                endDate: values.duration[1],
-            },
-            {
-                onSuccess: (res) => {
-                    notification.success({
-                        message: 'Voucher Created Successfully!',
-                        description: (
-                            <Button
-                                onClick={() =>
-                                    navigate({
-                                        to: '/vouchers/$id',
-                                        params: {
-                                            id: res.data.id,
-                                        },
-                                    })
-                                }
-                            >
-                                View Project
-                            </Button>
-                        ),
-                    })
-                    handleClose()
+        if (voucherId !== undefined) {
+            updateVoucher.mutate(
+                {
+                    ...values,
+                    id: voucherId,
+                    startDate: values.duration[0],
+                    endDate: values.duration[1],
                 },
-            },
-        )
+                {
+                    onSuccess: (res) => {
+                        notification.success({
+                            message: 'Voucher Updated Successfully!',
+                            description: (
+                                <Button
+                                    onClick={() =>
+                                        navigate({
+                                            to: '/vouchers/$id',
+                                            params: {
+                                                id: res.data.id,
+                                            },
+                                        })
+                                    }
+                                >
+                                    View Project
+                                </Button>
+                            ),
+                        })
+                        handleClose()
+                    },
+                },
+            )
+        } else {
+            createVoucher.mutate(
+                {
+                    ...values,
+                    project: projectId,
+                    startDate: values.duration[0],
+                    endDate: values.duration[1],
+                },
+                {
+                    onSuccess: (res) => {
+                        notification.success({
+                            message: 'Voucher Created Successfully!',
+                            description: (
+                                <Button
+                                    onClick={() =>
+                                        navigate({
+                                            to: '/vouchers/$id',
+                                            params: {
+                                                id: res.data.id,
+                                            },
+                                        })
+                                    }
+                                >
+                                    View Project
+                                </Button>
+                            ),
+                        })
+                        handleClose()
+                    },
+                },
+            )
+        }
     }
 
     return (
         <>
-            {children({ handleOpen })}
+            {children({ handleOpenCreate, handleOpenUpdate })}
             <Modal
                 open={open}
                 onCancel={handleClose}
-                title='Create Voucher'
+                title={voucherId ? 'Update Voucher' : 'Create Voucher'}
                 width={800}
                 footer={[
                     <Button type='default' onClick={handleClose}>
                         Close
                     </Button>,
                     <Button type='primary' loading={createVoucher.isPending} onClick={form.submit}>
-                        Create Voucher
+                        {voucherId ? 'Update' : 'Create'} Voucher
                     </Button>,
                 ]}
             >
@@ -124,10 +217,7 @@ export default function CreateVoucherModal({ children }: Props) {
                         label='Tickets'
                         tooltip='Select the tickets to apply this voucher to. (Leave empty to apply to all tickets)'
                         mode='multiple'
-                        request={async () => {
-                            const res = await Tickets_GetAllByProjectId({ projectId: projectId! })
-                            return res.data.map((ticket) => ({ label: ticket.ticketName, value: ticket.id }))
-                        }}
+                        options={tickets.data}
                         placeholder='Select Tickets'
                     />
                     <ProFormText

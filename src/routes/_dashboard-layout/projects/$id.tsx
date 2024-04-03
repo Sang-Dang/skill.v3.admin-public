@@ -13,7 +13,7 @@ import TicketsTable from '@/routes/_dashboard-layout/tickets/-base/TicketsTable'
 import CreateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/CreateTicketModal'
 import UpdateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/UpdateTicketModel'
 import BaseVouchersTable from '@/routes/_dashboard-layout/vouchers/-base/BaseVouchersTable'
-import CreateVoucherModal from '@/routes/_dashboard-layout/vouchers/-modals/CreateVoucherModal'
+import CreateOrUpdateVoucherModal from '@/routes/_dashboard-layout/vouchers/-modals/CreateOrUpdateVoucherModal'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
@@ -341,77 +341,77 @@ function VouchersListView() {
     const navigate = useNavigate()
 
     return (
-        <ContentWrapper.ContentCard
-            useCard
-            cardProps={{
-                title: 'Vouchers',
-                extra: (
-                    <CreateVoucherModal>
-                        {({ handleOpen }) => (
-                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpen(projectId)}>
+        <CreateOrUpdateVoucherModal>
+            {({ handleOpenCreate, handleOpenUpdate }) => (
+                <ContentWrapper.ContentCard
+                    useCard
+                    cardProps={{
+                        title: 'Vouchers',
+                        extra: (
+                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpenCreate(projectId)}>
                                 Create
                             </Button>
-                        )}
-                    </CreateVoucherModal>
-                ),
-                style: {
-                    borderTopLeftRadius: 0,
-                },
-            }}
-        >
-            {vouchers.isError && 'PLACEHOLDER FOR ERROR'}
-            <BaseVouchersTable
-                isLoading={vouchers.isLoading}
-                vouchers={vouchers.data}
-                limit={limit}
-                page={page}
-                tableWrapperProps={{
-                    style: {
-                        padding: 0,
-                    },
-                }}
-                appendActions={(record) => [
-                    {
-                        key: 'update-voucher',
-                        label: 'Update',
-                        icon: <EditOutlined />,
-                        onClick: () => {},
-                    },
-                    {
-                        key: 'delete-voucher',
-                        label: 'Delete',
-                        icon: <DeleteOutlined />,
-                        danger: true,
-                        onClick: () => {},
-                    },
-                ]}
-                tableProps={{
-                    pagination: {
-                        onChange(page, pageSize) {
-                            navigate({
-                                search: (search) => {
-                                    return {
-                                        ...search,
-                                        vouchersPage: page,
-                                        vouchersLimit: pageSize,
-                                    }
-                                },
-                            })
+                        ),
+                        style: {
+                            borderTopLeftRadius: 0,
                         },
-                        onShowSizeChange(page, pageSize) {
-                            navigate({
-                                search: (search) => {
-                                    return {
-                                        ...search,
-                                        vouchersPage: page,
-                                        vouchersLimit: pageSize,
-                                    }
+                    }}
+                >
+                    {vouchers.isError && 'PLACEHOLDER FOR ERROR'}
+                    <BaseVouchersTable
+                        isLoading={vouchers.isLoading}
+                        vouchers={vouchers.data}
+                        limit={limit}
+                        page={page}
+                        tableWrapperProps={{
+                            style: {
+                                padding: 0,
+                            },
+                        }}
+                        appendActions={(record) => [
+                            {
+                                key: 'update-voucher',
+                                label: 'Update',
+                                icon: <EditOutlined />,
+                                onClick: () => handleOpenUpdate(record.id),
+                            },
+                            {
+                                key: 'delete-voucher',
+                                label: 'Delete',
+                                icon: <DeleteOutlined />,
+                                danger: true,
+                                onClick: () => {},
+                            },
+                        ]}
+                        tableProps={{
+                            pagination: {
+                                onChange(page, pageSize) {
+                                    navigate({
+                                        search: (search) => {
+                                            return {
+                                                ...search,
+                                                vouchersPage: page,
+                                                vouchersLimit: pageSize,
+                                            }
+                                        },
+                                    })
                                 },
-                            })
-                        },
-                    },
-                }}
-            />
-        </ContentWrapper.ContentCard>
+                                onShowSizeChange(page, pageSize) {
+                                    navigate({
+                                        search: (search) => {
+                                            return {
+                                                ...search,
+                                                vouchersPage: page,
+                                                vouchersLimit: pageSize,
+                                            }
+                                        },
+                                    })
+                                },
+                            },
+                        }}
+                    />
+                </ContentWrapper.ContentCard>
+            )}
+        </CreateOrUpdateVoucherModal>
     )
 }

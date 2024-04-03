@@ -5,7 +5,7 @@ import axios from 'axios'
 type Request = Pick<TicketModel, 'ticketName' | 'description' | 'startDate' | 'endDate' | 'price' | 'id'>
 type Response = TicketModel
 
-export async function Ticket_Update(req: Request) {
+export async function Tickets_Update(req: Request) {
     return axios.put<Response>(
         `/ticket/${encodeURIComponent(req.id)}`,
         {
