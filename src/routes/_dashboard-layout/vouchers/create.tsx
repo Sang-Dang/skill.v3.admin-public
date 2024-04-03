@@ -494,13 +494,13 @@ function Step3_VoucherInformation({ onFinish, setStep, isSubmitting }: StepProps
                             message: 'Voucher code must be between 3 and 255 characters',
                         },
                         {
-                            async validator(_, value, callback) {
+                            async validator(_, value) {
                                 const vouchers = await TicketVoucher_GetAllByProjectId({ projectId })
 
                                 if (vouchers.data.find((v) => v.voucherCode === value)) {
-                                    callback('Voucher code already exists')
+                                    return Promise.reject('Voucher code already exists')
                                 } else {
-                                    callback()
+                                    return Promise.resolve()
                                 }
                             },
                         },

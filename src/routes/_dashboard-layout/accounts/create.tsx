@@ -113,11 +113,11 @@ function CreateAccountComponent() {
                                             required: true,
                                         },
                                         {
-                                            validator(_, value, callback) {
+                                            async validator(_, value) {
                                                 if (accounts.data.some((account) => account.email === value)) {
-                                                    callback('Email already exists')
+                                                    return Promise.reject('Email already exists')
                                                 } else {
-                                                    callback()
+                                                    return Promise.resolve()
                                                 }
                                             },
                                         },
@@ -140,11 +140,11 @@ function CreateAccountComponent() {
                                                 required: true,
                                             },
                                             {
-                                                validator(_, value, callback) {
+                                                validator(_, value) {
                                                     if (accounts.data.some((account) => account.username === value)) {
-                                                        callback('Username already exists')
+                                                        return Promise.reject('Username already exists')
                                                     } else {
-                                                        callback()
+                                                        return Promise.resolve()
                                                     }
                                                 },
                                             },
@@ -185,11 +185,11 @@ function CreateAccountComponent() {
                                             type: 'string',
                                             min: 1,
                                             required: true,
-                                            validator(_, value, callback) {
+                                            validator(_, value) {
                                                 if (value !== form.getFieldValue('confirmPassword')) {
-                                                    callback('Passwords do not match')
+                                                    return Promise.reject('Passwords do not match')
                                                 } else {
-                                                    callback()
+                                                    return Promise.resolve()
                                                 }
                                             },
                                         },
@@ -207,11 +207,11 @@ function CreateAccountComponent() {
                                             required: true,
                                         },
                                         {
-                                            validator(_, value, callback) {
+                                            validator(_, value) {
                                                 if (value !== form.getFieldValue('password')) {
-                                                    callback('Passwords do not match')
+                                                    return Promise.reject('Passwords do not match')
                                                 } else {
-                                                    callback()
+                                                    return Promise.resolve()
                                                 }
                                             },
                                         },

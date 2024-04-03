@@ -13,7 +13,8 @@ import TicketsTable from '@/routes/_dashboard-layout/tickets/-base/TicketsTable'
 import CreateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/CreateTicketModal'
 import UpdateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/UpdateTicketModel'
 import BaseVouchersTable from '@/routes/_dashboard-layout/vouchers/-base/BaseVouchersTable'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import CreateVoucherModal from '@/routes/_dashboard-layout/vouchers/-modals/CreateVoucherModal'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
 import { Button, Descriptions, Dropdown, Flex, Grid, Space, Tabs, Typography } from 'antd'
@@ -249,7 +250,7 @@ function TicketsListView() {
                 extra: (
                     <CreateTicketModal>
                         {({ handleOpen }) => (
-                            <Button type='primary' onClick={() => handleOpen(id)}>
+                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpen(id)}>
                                 Create
                             </Button>
                         )}
@@ -344,15 +345,15 @@ function VouchersListView() {
             useCard
             cardProps={{
                 title: 'Vouchers',
-                // extra: (
-                //     <CreateTicketModal>
-                //         {({ handleOpen }) => (
-                //             <Button type='primary' onClick={() => handleOpen(id)}>
-                //                 Create
-                //             </Button>
-                //         )}
-                //     </CreateTicketModal>
-                // ),
+                extra: (
+                    <CreateVoucherModal>
+                        {({ handleOpen }) => (
+                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpen(projectId)}>
+                                Create
+                            </Button>
+                        )}
+                    </CreateVoucherModal>
+                ),
                 style: {
                     borderTopLeftRadius: 0,
                 },
@@ -369,6 +370,21 @@ function VouchersListView() {
                         padding: 0,
                     },
                 }}
+                appendActions={(record) => [
+                    {
+                        key: 'update-voucher',
+                        label: 'Update',
+                        icon: <EditOutlined />,
+                        onClick: () => {},
+                    },
+                    {
+                        key: 'delete-voucher',
+                        label: 'Delete',
+                        icon: <DeleteOutlined />,
+                        danger: true,
+                        onClick: () => {},
+                    },
+                ]}
                 tableProps={{
                     pagination: {
                         onChange(page, pageSize) {

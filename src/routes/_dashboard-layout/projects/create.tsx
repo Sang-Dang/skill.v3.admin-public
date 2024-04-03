@@ -123,11 +123,11 @@ function CreateProjectComponent() {
                                                 max: 255,
                                             },
                                             {
-                                                validator(_, value, callback) {
+                                                validator(_, value) {
                                                     if (projects.data?.find((p) => p.projectName === value)) {
-                                                        callback('Project name already exists.')
+                                                        return Promise.reject('Project name already exists.')
                                                     } else {
-                                                        callback()
+                                                        return Promise.resolve()
                                                     }
                                                 },
                                             },

@@ -168,13 +168,13 @@ export default function UpdateProjectModal({ children, afterSuccess }: Props) {
                                         max: 255,
                                     },
                                     {
-                                        async validator(_, value, callback) {
+                                        async validator(_, value) {
                                             const projects = await Project_GetAll()
 
                                             if (projects.data.find((p) => p.projectName === value)) {
-                                                callback('Project name already exists.')
+                                                return Promise.reject('Project name already exists.')
                                             } else {
-                                                callback()
+                                                return Promise.resolve()
                                             }
                                         },
                                     },
