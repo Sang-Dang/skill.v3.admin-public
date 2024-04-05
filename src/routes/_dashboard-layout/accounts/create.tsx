@@ -4,6 +4,8 @@ import { accountQueryKeys } from '@/api/accounts/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RoleTag from '@/common/components/RoleTag'
 import { Role } from '@/lib/enum/role.enum'
+import { AccountBreadcrumbs } from '@/routes/_dashboard-layout/accounts/-breadcrumbs'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import { useMutation } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
 import { App, Button, Flex, Form, Input, Select, Spin } from 'antd'
@@ -86,7 +88,7 @@ function CreateAccountComponent() {
         <ContentWrapper
             headTitle='Create Account'
             title='Create Account'
-            breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, AccountBreadcrumbs.static.index, AccountBreadcrumbs.static.create]}
             innerStyle={{ marginBlock: '25px' }}
         >
             <Form form={form} name='create-account-form' layout='vertical' requiredMark={false} onFinish={handleSubmit}>

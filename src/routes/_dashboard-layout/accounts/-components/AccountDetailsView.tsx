@@ -3,6 +3,8 @@ import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenu
 import RoleTag from '@/common/components/RoleTag'
 import SingleActionModal from '@/common/components/SingleActionModal'
 import { AuthModel } from '@/lib/model/auth.model'
+import { AccountBreadcrumbs } from '@/routes/_dashboard-layout/accounts/-breadcrumbs'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import { DeleteOutlined } from '@ant-design/icons'
 import { UseQueryResult } from '@tanstack/react-query'
 import { Card, Descriptions, Dropdown, Flex, Grid, Space, Typography } from 'antd'
@@ -20,11 +22,9 @@ export default function AccountDetailsView({ account }: Props) {
             headTitle={'Account Details'}
             title='Account Details'
             breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    href: '/dashboard',
-                    title: 'Home',
-                },
+                DashboardBreadcrumbs.static.index,
+                AccountBreadcrumbs.static.index,
+                AccountBreadcrumbs.dynamic.$id(account.data?.id),
             ]}
             innerStyle={{
                 marginBlock: '25px',

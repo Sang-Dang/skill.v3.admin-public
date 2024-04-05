@@ -8,6 +8,8 @@ import { TicketVoucher_GetAllByProjectId } from '@/api/tickets/voucher/TicketVou
 import ContentWrapper from '@/common/components/ContentWrapper'
 import ModalWrapper from '@/common/components/ModalWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketVouchersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/vouchers/-breadcrumbs'
 import CreateVoucherSuccess from '@/routes/_dashboard-layout/tickets/vouchers/-components/CreateVoucherSuccess'
 import { InfoCircleFilled, PlusOutlined } from '@ant-design/icons'
 import { CheckCard, ProFormDateRangePicker, ProFormDigit, ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
@@ -100,7 +102,11 @@ function CreateVoucherComponent() {
         <ContentWrapper
             headTitle='Create Voucher'
             title='Create Voucher'
-            breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
+            breadcrumbs={[
+                DashboardBreadcrumbs.static.index,
+                TicketVouchersBreadcrumbs.static.index,
+                TicketVouchersBreadcrumbs.static.create,
+            ]}
             innerStyle={{ marginBlock: '25px' }}
         >
             <ContentWrapper.ContentCard useCard>

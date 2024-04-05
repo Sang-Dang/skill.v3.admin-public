@@ -9,7 +9,9 @@ import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenu
 import DisabledTag from '@/common/components/DisabledTag'
 import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import TicketsTable from '@/routes/_dashboard-layout/tickets/-base/TicketsTable'
+import { TicketVouchersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/vouchers/-breadcrumbs'
 import CreateOrUpdateVoucherModal from '@/routes/_dashboard-layout/tickets/vouchers/-modals/CreateOrUpdateVoucherModal'
 import DisableTicketVoucherModal from '@/routes/_dashboard-layout/tickets/vouchers/-modals/DisableTicketVoucherModal'
 import UndisableTicketVoucherModal from '@/routes/_dashboard-layout/tickets/vouchers/-modals/UndisableTicketVoucherModal'
@@ -68,11 +70,9 @@ function VoucherDetails() {
             headTitle={'Voucher Details'}
             title='Voucher Details'
             breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    href: '/dashboard',
-                    title: 'Home',
-                },
+                DashboardBreadcrumbs.static.index,
+                TicketVouchersBreadcrumbs.static.index,
+                TicketVouchersBreadcrumbs.dynamic.$id(voucher.data?.id),
             ]}
             innerStyle={{
                 marginBlock: '25px',

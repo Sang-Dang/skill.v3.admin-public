@@ -2,7 +2,9 @@ import { accountQueryKeys } from '@/api/accounts/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { Role } from '@/lib/enum/role.enum'
+import { AccountBreadcrumbs } from '@/routes/_dashboard-layout/accounts/-breadcrumbs'
 import AccountsByRoleTable from '@/routes/_dashboard-layout/accounts/-components/AccountsByRoleTable'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
 import { z } from 'zod'
@@ -43,14 +45,7 @@ export function AccountsComponent() {
         <ContentWrapper
             headTitle='Accounts List'
             title='Accounts List'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, AccountBreadcrumbs.static.index]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -64,8 +59,8 @@ export function AccountsComponent() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })

@@ -8,6 +8,8 @@ import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenu
 import DisabledTag from '@/common/components/DisabledTag'
 import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketBreadcrumbs } from '@/routes/_dashboard-layout/tickets/-breadcrumbs'
 import CreateOrUpdateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/CreateOrUpdateTicketModal'
 import DisableTicketModal from '@/routes/_dashboard-layout/tickets/-modals/DisableTicketModal'
 import UndisableTicketModal from '@/routes/_dashboard-layout/tickets/-modals/UndisableTicketModal'
@@ -62,11 +64,9 @@ function TicketDetails() {
             headTitle={'Ticket Details'}
             title='Ticket Details'
             breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    href: '/dashboard',
-                    title: 'Home',
-                },
+                DashboardBreadcrumbs.static.index,
+                TicketBreadcrumbs.static.index,
+                TicketBreadcrumbs.dynamic.$id(project.data?.id),
             ]}
             innerStyle={{
                 marginBlock: '25px',

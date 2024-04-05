@@ -12,8 +12,6 @@ import DisabledTag from '@/common/components/DisabledTag'
 import RefreshButton from '@/common/components/ReloadButton'
 import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
-import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
-import { ProjectBreadcrumbs } from '@/routes/_dashboard-layout/projects/-breadcrumbs'
 import DisableProjectModal from '@/routes/_dashboard-layout/projects/-modals/DisableProjectModal'
 import UndisableProjectModal from '@/routes/_dashboard-layout/projects/-modals/UndisableProjectModal'
 import UpdateProjectModal from '@/routes/_dashboard-layout/projects/-modals/UpdateProjectModal'
@@ -92,9 +90,11 @@ function ProjectDetails() {
             headTitle={'Project Details'}
             title='Project Details'
             breadcrumbs={[
-                DashboardBreadcrumbs.static.index,
-                ProjectBreadcrumbs.static.index,
-                ProjectBreadcrumbs.dynamic.$id(project.data?.id),
+                {
+                    breadcrumbName: 'Home',
+                    href: '/dashboard',
+                    title: 'Home',
+                },
             ]}
             innerStyle={{
                 marginBlock: '25px',
@@ -116,7 +116,7 @@ function ProjectDetails() {
                             <DisabledTag disabledAt={project.data?.deletedAt} />
                         </div>
                         <Space>
-                            <Link to='/projects/$id/checkin' params={{ id: id }}>
+                            <Link to='/projects/$id/checkin' params={{ id }}>
                                 <Button type='primary'>Check in</Button>
                             </Link>
                             <UndisableProjectModal>

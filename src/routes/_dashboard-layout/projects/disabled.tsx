@@ -2,6 +2,8 @@ import { projectQueryKeys } from '@/api/projects/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { Role } from '@/lib/enum/role.enum'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { ProjectBreadcrumbs } from '@/routes/_dashboard-layout/projects/-breadcrumbs'
 import DisabledProjectsTable from '@/routes/_dashboard-layout/projects/-components/DisabledProjectsTable'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
@@ -41,14 +43,7 @@ function DisabledProjectsList() {
         <ContentWrapper
             headTitle='Disabled Projects'
             title='Disabled Projects'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, ProjectBreadcrumbs.static.index, ProjectBreadcrumbs.static.disabled]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -62,8 +57,8 @@ function DisabledProjectsList() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })

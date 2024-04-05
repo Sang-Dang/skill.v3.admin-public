@@ -7,8 +7,10 @@ import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenu
 import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { TicketOrderStatus } from '@/lib/enum/ticketOrder-status.enum'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import BaseOrderItemsTable from '@/routes/_dashboard-layout/tickets/orders/-base/BaseOrderItemsTable'
 import BaseTransactionsTable from '@/routes/_dashboard-layout/tickets/orders/-base/BaseTransactionsTable'
+import { TicketOrdersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/orders/-breadcrumbs'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router'
 import { Button, Descriptions, Dropdown, Flex, Grid, Skeleton, Space, Steps, Tabs, Typography } from 'antd'
@@ -85,11 +87,9 @@ function TicketOrderDetails() {
             headTitle={'Ticket Order Details'}
             title='Ticket Order Details'
             breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    href: '/dashboard',
-                    title: 'Home',
-                },
+                DashboardBreadcrumbs.static.index,
+                TicketOrdersBreadcrumbs.static.index,
+                TicketOrdersBreadcrumbs.dynamic.$id(ticket.data?.id),
             ]}
             innerStyle={{
                 marginBlock: '25px',
@@ -293,8 +293,6 @@ function TicketOrderDetails() {
                         onTabClick={(key: string) => {
                             navigate({
                                 search: {
-                                    ticketsPage: undefined,
-                                    ticketsLimit: undefined,
                                     tab: key,
                                 },
                             })

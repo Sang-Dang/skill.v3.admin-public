@@ -2,6 +2,8 @@ import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_Create } from '@/api/projects/Project_Create'
 import { Project_GetAll } from '@/api/projects/Project_GetAll'
 import ContentWrapper from '@/common/components/ContentWrapper'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { ProjectBreadcrumbs } from '@/routes/_dashboard-layout/projects/-breadcrumbs'
 import { ProFormDateRangePicker } from '@ant-design/pro-components'
 import { useMutation } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
@@ -84,7 +86,7 @@ function CreateProjectComponent() {
         <ContentWrapper
             headTitle='Create Project'
             title='Create Project'
-            breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, ProjectBreadcrumbs.static.index, ProjectBreadcrumbs.static.create]}
             innerStyle={{ marginBlock: '25px' }}
         >
             <ContentWrapper.ContentCard

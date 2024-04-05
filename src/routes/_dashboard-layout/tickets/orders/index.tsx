@@ -3,6 +3,8 @@ import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { Role } from '@/lib/enum/role.enum'
 import { TicketOrderStatus } from '@/lib/enum/ticketOrder-status.enum'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketOrdersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/orders/-breadcrumbs'
 import TicketOrderByStatusTable from '@/routes/_dashboard-layout/tickets/orders/-components/TicketOrderByStatusTable'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
@@ -44,14 +46,7 @@ export function TicketOrdersList() {
         <ContentWrapper
             headTitle='Ticket Orders'
             title='Ticket Orders'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, TicketOrdersBreadcrumbs.static.index]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -65,8 +60,8 @@ export function TicketOrdersList() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })

@@ -11,11 +11,11 @@ import {
     MoneyCollectOutlined,
     ProjectOutlined,
     RightOutlined,
-    UnorderedListOutlined
+    UnorderedListOutlined,
 } from '@ant-design/icons'
-import { createFileRoute, Outlet, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, useNavigate, useRouterState } from '@tanstack/react-router'
 import { Button, Grid, Layout, Menu, theme } from 'antd'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const { Sider } = Layout
 
@@ -39,8 +39,14 @@ export const Route = createFileRoute('/_dashboard-layout')({
 function DashboardLayout() {
     const [collapsed, setCollapsed] = useState(false)
     const navigate = useNavigate()
+    const routerState = useRouterState()
     const { token } = theme.useToken()
     const screens = Grid.useBreakpoint()
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore don't worry about it
+    const currentPath: string = useMemo(() => routerState.location.pathname, [routerState.location.pathname])
+    const splitCurrentPath = useMemo(() => currentPath.split('/'), [currentPath])
 
     return (
         <Layout
@@ -70,149 +76,150 @@ function DashboardLayout() {
                     borderColor: token.colorBorderSecondary,
                 }}
             >
-                <div
-                    style={{
-                        height: '93px',
-                        display: 'grid',
-                        placeItems: 'center',
-                    }}
-                >
-                    <div
-                        style={{
-                            fontSize: token.fontSizeHeading3,
-                            fontWeight: 'bold',
-                            backgroundColor: token.colorPrimaryBg,
-                            color: token.colorTextBase,
-                            width: '60%',
-                            paddingBlock: '5px',
-                            textAlign: 'center',
-                            borderRadius: token.borderRadiusLG,
-                        }}
-                    >
-                        Skira
+                <div className='flex h-full flex-col'>
+                    <div className='grid h-[93px] flex-shrink place-items-center'>
+                        <div
+                            style={{
+                                fontSize: token.fontSizeHeading3,
+                                fontWeight: 'bold',
+                                backgroundColor: token.colorPrimaryBg,
+                                color: token.colorTextBase,
+                                width: '60%',
+                                paddingBlock: '5px',
+                                textAlign: 'center',
+                                borderRadius: token.borderRadiusLG,
+                            }}
+                        >
+                            Skira
+                        </div>
+                    </div>
+                    <div className='flex-grow overflow-auto'>
+                        <Menu
+                            theme='light'
+                            mode='inline'
+                            onSelect={() => {
+                                if (screens.xs) {
+                                    setCollapsed((prev) => !prev)
+                                }
+                            }}
+                            defaultSelectedKeys={[currentPath]}
+                            defaultOpenKeys={[splitCurrentPath[1], splitCurrentPath[1] + '/' + splitCurrentPath[2]]}
+                            items={[
+                                {
+                                    key: '/dashboard',
+                                    label: 'Dashboard',
+                                    icon: <DashboardOutlined />,
+                                },
+                                {
+                                    key: 'accounts',
+                                    label: 'Accounts',
+                                    icon: <AccountBookOutlined />,
+                                    children: [
+                                        {
+                                            label: 'Account List',
+                                            key: '/accounts',
+                                            icon: <UnorderedListOutlined />,
+                                        },
+                                        {
+                                            label: 'Create Account',
+                                            key: '/accounts/create',
+                                            icon: <FileAddOutlined />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    key: 'projects',
+                                    label: 'Projects',
+                                    icon: <ProjectOutlined />,
+                                    children: [
+                                        {
+                                            label: 'Project List',
+                                            key: '/projects',
+                                            icon: <UnorderedListOutlined />,
+                                        },
+                                        {
+                                            label: 'Create Project',
+                                            key: '/projects/create',
+                                            icon: <FileAddOutlined />,
+                                        },
+                                        {
+                                            label: 'Disabled Projects',
+                                            key: '/projects/disabled',
+                                            icon: <LockOutlined />,
+                                        },
+                                    ],
+                                },
+                                {
+                                    key: 'tickets',
+                                    label: 'Tickets',
+                                    icon: <IdcardOutlined />,
+                                    children: [
+                                        {
+                                            label: 'Ticket List',
+                                            key: '/tickets',
+                                            icon: <UnorderedListOutlined />,
+                                        },
+                                        {
+                                            label: 'Create Ticket',
+                                            key: '/tickets/create',
+                                            icon: <FileAddOutlined />,
+                                        },
+                                        {
+                                            label: 'Disabled Tickets',
+                                            key: '/tickets/disabled',
+                                            icon: <LockOutlined />,
+                                        },
+                                        {
+                                            key: 'tickets/orders',
+                                            label: 'Ticket Orders',
+                                            icon: <MoneyCollectOutlined />,
+                                            children: [
+                                                {
+                                                    label: 'Order List',
+                                                    key: '/tickets/orders',
+                                                    icon: <UnorderedListOutlined />,
+                                                },
+                                                {
+                                                    label: 'Create Order',
+                                                    key: '/tickets/orders/create',
+                                                    icon: <FileAddOutlined />,
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            label: 'Ticket Vouchers',
+                                            key: 'tickets/vouchers',
+                                            icon: <CreditCardOutlined />,
+                                            children: [
+                                                {
+                                                    label: 'Voucher List',
+                                                    key: '/tickets/vouchers',
+                                                    icon: <UnorderedListOutlined />,
+
+                                                },
+                                                {
+                                                    label: 'Create Voucher',
+                                                    key: '/tickets/vouchers/create',
+                                                    icon: <FileAddOutlined />,
+                                                },
+                                                {
+                                                    label: 'Disabled Vouchers',
+                                                    key: '/tickets/vouchers/disabled',
+                                                    icon: <LockOutlined />,
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ]}
+                            onClick={(info) =>
+                                navigate({
+                                    to: info.key,
+                                })
+                            }
+                        />
                     </div>
                 </div>
-                <Menu
-                    theme='light'
-                    mode='inline'
-                    onSelect={() => {
-                        if (screens.xs) {
-                            setCollapsed((prev) => !prev)
-                        }
-                    }}
-                    items={[
-                        {
-                            key: '/dashboard',
-                            label: 'Dashboard',
-                            icon: <DashboardOutlined />,
-                        },
-                        {
-                            key: 'accounts',
-                            label: 'Accounts',
-                            icon: <AccountBookOutlined />,
-                            children: [
-                                {
-                                    label: 'Account List',
-                                    key: '/accounts',
-                                    icon: <UnorderedListOutlined />,
-                                },
-                                {
-                                    label: 'Create Account',
-                                    key: '/accounts/create',
-                                    icon: <FileAddOutlined />,
-                                },
-                            ],
-                        },
-                        {
-                            key: 'projects',
-                            label: 'Projects',
-                            icon: <ProjectOutlined />,
-                            children: [
-                                {
-                                    label: 'Project List',
-                                    key: '/projects',
-                                    icon: <UnorderedListOutlined />,
-                                },
-                                {
-                                    label: 'Create Project',
-                                    key: '/projects/create',
-                                    icon: <FileAddOutlined />,
-                                },
-                                {
-                                    label: 'Disabled Projects',
-                                    key: '/projects/disabled',
-                                    icon: <LockOutlined />,
-                                },
-                            ],
-                        },
-                        {
-                            key: 'tickets',
-                            label: 'Tickets',
-                            icon: <IdcardOutlined />,
-                            children: [
-                                {
-                                    label: 'Ticket List',
-                                    key: '/tickets',
-                                    icon: <UnorderedListOutlined />,
-                                },
-                                {
-                                    label: 'Create Ticket',
-                                    key: '/tickets/create',
-                                    icon: <FileAddOutlined />,
-                                },
-                                {
-                                    label: 'Disabled Tickets',
-                                    key: '/tickets/disabled',
-                                    icon: <LockOutlined />,
-                                },
-                                {
-                                    key: 'orders',
-                                    label: 'Ticket Orders',
-                                    icon: <MoneyCollectOutlined />,
-                                    children: [
-                                        {
-                                            label: 'Order List',
-                                            key: '/tickets/orders',
-                                            icon: <UnorderedListOutlined />,
-                                        },
-                                        {
-                                            label: 'Create Order',
-                                            key: '/tickets/orders/create',
-                                            icon: <FileAddOutlined />,
-                                        },
-                                    ],
-                                },
-                                {
-                                    label: 'Ticket Vouchers',
-                                    key: 'vouchers',
-                                    icon: <CreditCardOutlined />,
-                                    children: [
-                                        {
-                                            label: 'Voucher List',
-                                            key: '/tickets/vouchers',
-                                            icon: <UnorderedListOutlined />,
-                                        },
-                                        {
-                                            label: 'Create Voucher',
-                                            key: '/tickets/vouchers/create',
-                                            icon: <FileAddOutlined />,
-                                        },
-                                        {
-                                            label: 'Disabled Vouchers',
-                                            key: '/tickets/vouchers/disabled',
-                                            icon: <LockOutlined />,
-                                        }
-                                    ],
-                                },
-                            ],
-                        },
-                    ]}
-                    onClick={(info) =>
-                        navigate({
-                            to: info.key,
-                        })
-                    }
-                />
                 <Button
                     className={cn(
                         'absolute left-full top-6 z-[105]',

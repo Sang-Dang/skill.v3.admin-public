@@ -5,4 +5,5 @@ export const ticketVoucherQueryKeys = {
     GetAllByStatus: (status: TicketVoucherStatus) => ['ticket-voucher', status],
     GetAllByProjectId: (projectId: string) => ['ticket-voucher', projectId],
     GetById: (id: string) => ['ticket-voucher', id],
+    GetAllDisabled: () => ['ticket-voucher', 'disabled'],
 }

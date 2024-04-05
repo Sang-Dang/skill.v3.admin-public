@@ -9,6 +9,8 @@ import ImageWithCrop from '@/common/components/ImageWithCrop'
 import { CheckImageUrl } from '@/common/util/CheckImageUrl'
 import { fromEnv } from '@/config/env.config'
 import { ProjectModel } from '@/lib/model/project.model'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketBreadcrumbs } from '@/routes/_dashboard-layout/tickets/-breadcrumbs'
 import { ProFormDateRangePicker, ProFormDigit, ProFormMoney, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Await, createFileRoute, defer, useNavigate } from '@tanstack/react-router'
@@ -101,7 +103,7 @@ function CreateTicketComponent() {
         <ContentWrapper
             headTitle='Create Ticket'
             title='Create Ticket'
-            breadcrumbs={[{ breadcrumbName: 'Home', href: '/dashboard', title: 'Home' }]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, TicketBreadcrumbs.static.index, TicketBreadcrumbs.static.create]}
             innerStyle={{ marginBlock: '25px' }}
         >
             <Form

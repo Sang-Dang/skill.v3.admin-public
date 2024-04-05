@@ -34,6 +34,7 @@ import { Route as DashboardLayoutTicketsVouchersCreateImport } from './routes/_d
 import { Route as DashboardLayoutTicketsVouchersIdImport } from './routes/_dashboard-layout/tickets/vouchers/$id'
 import { Route as DashboardLayoutTicketsOrdersCreateImport } from './routes/_dashboard-layout/tickets/orders/create'
 import { Route as DashboardLayoutTicketsOrdersIdImport } from './routes/_dashboard-layout/tickets/orders/$id'
+import { Route as DashboardLayoutProjectsIdCheckinImport } from './routes/_dashboard-layout/projects/$id_.checkin'
 
 // Create/Update Routes
 
@@ -169,6 +170,12 @@ const DashboardLayoutTicketsOrdersIdRoute =
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
 
+const DashboardLayoutProjectsIdCheckinRoute =
+  DashboardLayoutProjectsIdCheckinImport.update({
+    path: '/projects/$id/checkin',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -237,6 +244,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutTicketsIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
+    '/_dashboard-layout/projects/$id/checkin': {
+      preLoaderRoute: typeof DashboardLayoutProjectsIdCheckinImport
+      parentRoute: typeof DashboardLayoutImport
+    }
     '/_dashboard-layout/tickets/orders/$id': {
       preLoaderRoute: typeof DashboardLayoutTicketsOrdersIdImport
       parentRoute: typeof DashboardLayoutImport
@@ -286,6 +297,7 @@ export const routeTree = rootRoute.addChildren([
     DashboardLayoutDashboardIndexRoute,
     DashboardLayoutProjectsIndexRoute,
     DashboardLayoutTicketsIndexRoute,
+    DashboardLayoutProjectsIdCheckinRoute,
     DashboardLayoutTicketsOrdersIdRoute,
     DashboardLayoutTicketsOrdersCreateRoute,
     DashboardLayoutTicketsVouchersIdRoute,

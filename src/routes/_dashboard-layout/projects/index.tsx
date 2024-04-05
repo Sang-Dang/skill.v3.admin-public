@@ -3,6 +3,8 @@ import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { ProjectStatus } from '@/lib/enum/project-status.enum'
 import { Role } from '@/lib/enum/role.enum'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { ProjectBreadcrumbs } from '@/routes/_dashboard-layout/projects/-breadcrumbs'
 import ProjectsByStatusTable from '@/routes/_dashboard-layout/projects/-components/ProjectsByStatusTable'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
@@ -50,14 +52,7 @@ function ProjectsComponent() {
         <ContentWrapper
             headTitle='Projects List'
             title='Projects List'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, ProjectBreadcrumbs.static.index]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -71,8 +66,8 @@ function ProjectsComponent() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })

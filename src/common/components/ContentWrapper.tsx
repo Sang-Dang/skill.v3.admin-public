@@ -1,7 +1,7 @@
 import ProfileDropdown from '@/common/components/ProfileDropdown'
 import Head from '@/common/util/Head'
 import { useAuth } from '@/common/util/useAuth'
-import { UserOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import { Avatar, Breadcrumb, Button, Card, CardProps, Flex, Grid, Layout, Space, Spin, theme, Typography } from 'antd'
 import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import { CSSProperties, ReactNode } from 'react'
@@ -55,20 +55,23 @@ export default function ContentWrapper({ children, title, breadcrumbs, headTitle
                         <Button
                             type='text'
                             style={{
-                                height: 'max-content',
+                                height: '100%',
                                 display: 'flex',
-                                gap: 10,
                                 alignItems: 'center',
                             }}
+                            icon={<CaretDownOutlined />}
                         >
-                            <Avatar shape='circle' icon={<UserOutlined />} size='large' />
+                            <Avatar shape='circle' icon={<UserOutlined />} size='default' className='mr-2' />
                             {screens.md && (
                                 <Typography.Paragraph
+                                    className='text-slate-500'
                                     style={{
                                         fontSize: token.fontSizeLG,
-                                        color: token.colorTextLabel,
                                         display: 'block',
+                                        margin: 0,
+                                        maxWidth: '100px',
                                     }}
+                                    ellipsis
                                 >
                                     {tokenDetails.username}
                                 </Typography.Paragraph>

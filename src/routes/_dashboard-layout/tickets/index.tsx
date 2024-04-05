@@ -2,6 +2,8 @@ import { ticketsQueryKeys } from '@/api/tickets/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { Role } from '@/lib/enum/role.enum'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketBreadcrumbs } from '@/routes/_dashboard-layout/tickets/-breadcrumbs'
 import AllTicketsTable from '@/routes/_dashboard-layout/tickets/-components/AllTicketsTable'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
@@ -47,14 +49,7 @@ export function TicketsComponent() {
         <ContentWrapper
             headTitle='Tickets List'
             title='Tickets List'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, TicketBreadcrumbs.static.index]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -68,8 +63,8 @@ export function TicketsComponent() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })

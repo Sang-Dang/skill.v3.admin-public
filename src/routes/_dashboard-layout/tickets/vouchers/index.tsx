@@ -2,6 +2,8 @@ import { ticketVoucherQueryKeys } from '@/api/tickets/voucher/key.query'
 import ContentWrapper from '@/common/components/ContentWrapper'
 import RefreshButton from '@/common/components/ReloadButton'
 import { TicketVoucherStatus } from '@/lib/enum/ticket-status.enum'
+import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
+import { TicketVouchersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/vouchers/-breadcrumbs'
 import VouchersByStatusTable from '@/routes/_dashboard-layout/tickets/vouchers/-components/VouchersByStatusTable'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Tabs } from 'antd'
@@ -36,14 +38,7 @@ function VouchersList() {
         <ContentWrapper
             headTitle='Vouchers List'
             title='Vouchers List'
-            breadcrumbs={[
-                {
-                    breadcrumbName: 'Home',
-                    title: 'Home',
-                    href: '/',
-                    key: 'home',
-                },
-            ]}
+            breadcrumbs={[DashboardBreadcrumbs.static.index, TicketVouchersBreadcrumbs.static.index]}
         >
             <Tabs
                 defaultActiveKey={search.tab}
@@ -57,8 +52,8 @@ function VouchersList() {
                 onTabClick={(key: string) => {
                     navigate({
                         search: {
-                            ticketsPage: undefined,
-                            ticketsLimit: undefined,
+                            page: undefined,
+                            limit: undefined,
                             tab: key,
                         },
                     })
