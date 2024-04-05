@@ -11,6 +11,16 @@ type Response = {
 }
 
 export async function File_GetImages_Blob(req: Request): Promise<Response> {
+
+    if (req.path.length === 0) {
+        return {
+            success: [],
+            successIndexes: [],
+            errors: [],
+            errorIndexes: [],
+        }
+    }
+
     const promises = req.path.map((path) => {
         return File_GetImage_Blob({ path: path })
     })

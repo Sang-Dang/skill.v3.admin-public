@@ -63,7 +63,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
     const images = useQuery({
         queryKey: fileQueryKeys.GetImagesByPath(ticket.data?.images),
         queryFn: () => File_GetImages_Blob({ path: ticket.data?.images ?? [] }),
-        enabled: ticket.isSuccess && ticket.data.images.length > 0,
+        enabled: ticket.isSuccess,
     })
 
     const createTicket = useMutation({
@@ -118,7 +118,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
         onSettled: () => {
             message.destroy('msg-update-ticket')
         },
-        onSuccess: (res) => {
+        onSuccess: () => {
             notification.success({
                 message: 'Ticket Updated Successfully!',
                 description: (
@@ -127,7 +127,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
                             navigate({
                                 to: '/tickets/$id',
                                 params: {
-                                    id: res.data.id,
+                                    id: ticketId!,
                                 },
                             })
                         }
@@ -161,15 +161,20 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
 
     useEffect(() => {
         if (images.isSuccess && ticket.isSuccess) {
-            setFileList(
-                images.data.success.map((blob, index) => ({
-                    uid: `fetched-image-#${index}`,
-                    name: `Fetched Image #${index}`,
-                    status: 'done',
-                    url: URL.createObjectURL(blob),
-                    response: ticket.data.images[images.data.successIndexes[index]],
-                })),
+            const imagesList = images.data.success.map(
+                (blob, index) =>
+                    ({
+                        uid: `fetched-image-#${index}`,
+                        name: `Fetched Image #${index}`,
+                        status: 'done',
+                        url: URL.createObjectURL(blob),
+                        response: ticket.data.images[images.data.successIndexes[index]],
+                    }) satisfies UploadFile<string>,
             )
+            setFileList(imagesList)
+            form.setFieldsValue({
+                images: imagesList,
+            })
         }
     }, [form, images.data, images.isSuccess, ticket.data, ticket.isSuccess])
 
@@ -203,6 +208,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
                     endDate: values.duration[1],
                     id: ticketId,
                     images: values.images.map((image: UploadFile<string>) => image.response),
+                    // images: values.images.map((image: UploadFile<string>) => image.response),
                 },
                 {
                     onSuccess: () => {
@@ -234,19 +240,26 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
             <Modal
                 open={open}
                 onCancel={handleClose}
+                onOk={form.submit}
                 title={ticketId ? 'Update Ticket' : 'Create Ticket'}
                 width={1000}
                 footer={[
                     <Button type='default' onClick={handleClose}>
                         Close
                     </Button>,
-                    <Button type='primary' loading={createTicket.isPending} onClick={form.submit}>
+                    <Button
+                        type='primary'
+                        key={ticketId ? `update-ticket-button` : `create-ticket-button`}
+                        loading={createTicket.isPending || updateTicket.isPending}
+                        onClick={form.submit}
+                    >
                         {ticketId ? 'Update' : 'Create'}
                     </Button>,
                 ]}
             >
                 <Form
                     form={form}
+                    key={ticketId ? `update-ticket-form` : `create-ticket-form`}
                     name='create-account-form'
                     layout='vertical'
                     requiredMark={false}
@@ -360,7 +373,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
                             />
                         </div>
                         {images.isSuccess || ticketId === undefined ? (
-                            <Form.Item<FieldType> shouldUpdate name='images' rules={[{ required: true }]} noStyle>
+                            <Form.Item<FieldType> shouldUpdate name='images' noStyle>
                                 <ImageWithCrop
                                     name='image'
                                     accept='.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp'
@@ -377,6 +390,7 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
                                         })
                                         setFileList(info.fileList)
                                     }}
+                                    defaultFileList={fileList}
                                     fileList={fileList}
                                     showUploadList={true}
                                     listType='picture'
