@@ -5,6 +5,7 @@ import { TicketVoucherModel } from '@/lib/model/ticketVoucher.model'
 export const projectQueryKeys = {
     GetAll: () => ['projects'],
     GetAllByStatus: (status: ProjectStatus) => ['projects', status],
+    GetAllDisabled: () => ['projects', 'disabled'],
     GetById: (id?: string) => ['projects', id],
     GetFromVoucher: (voucher?: TicketVoucherModel) => ['projects', voucher?.project],
     GetFromTicket: (ticket?: TicketModel) => ['projects', ticket?.project],

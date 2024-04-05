@@ -1,20 +1,26 @@
 import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_GetById } from '@/api/projects/Project_GetById'
 import { ticketsQueryKeys } from '@/api/tickets/key.query'
+import { ticketOrdersQueryKeys } from '@/api/tickets/orders/key.query'
+import { TicketOrders_GetAllByProjectId } from '@/api/tickets/orders/TicketOrders_GetAllByProjectId'
 import { Tickets_GetAllByProjectId } from '@/api/tickets/Tickets_GetAllByProjectId'
 import { ticketVoucherQueryKeys } from '@/api/tickets/voucher/key.query'
 import { TicketVoucher_GetAllByProjectId } from '@/api/tickets/voucher/TicketVoucher_GetAllByProjectId'
 import ContentWrapper from '@/common/components/ContentWrapper'
-import DetailsNotFound from '@/common/components/DetailsNotFound'
+import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenuItem'
+import DisabledTag from '@/common/components/DisabledTag'
 import RefreshButton from '@/common/components/ReloadButton'
+import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
+import DisableProjectModal from '@/routes/_dashboard-layout/projects/-modals/DisableProjectModal'
+import UndisableProjectModal from '@/routes/_dashboard-layout/projects/-modals/UndisableProjectModal'
 import UpdateProjectModal from '@/routes/_dashboard-layout/projects/-modals/UpdateProjectModal'
 import TicketsTable from '@/routes/_dashboard-layout/tickets/-base/TicketsTable'
-import CreateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/CreateTicketModal'
-import UpdateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/UpdateTicketModel'
-import BaseVouchersTable from '@/routes/_dashboard-layout/vouchers/-base/BaseVouchersTable'
-import CreateOrUpdateVoucherModal from '@/routes/_dashboard-layout/vouchers/-modals/CreateOrUpdateVoucherModal'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import CreateOrUpdateTicketModal from '@/routes/_dashboard-layout/tickets/-modals/CreateOrUpdateTicketModal'
+import BaseTicketOrdersTable from '@/routes/_dashboard-layout/tickets/orders/-base/BaseTicketOrdersTable'
+import BaseVouchersTable from '@/routes/_dashboard-layout/tickets/vouchers/-base/BaseVouchersTable'
+import CreateOrUpdateVoucherModal from '@/routes/_dashboard-layout/tickets/vouchers/-modals/CreateOrUpdateVoucherModal'
+import { DeleteOutlined, EditOutlined, LockOutlined, PlusOutlined, UnlockOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
 import { Button, Descriptions, Dropdown, Flex, Grid, Space, Tabs, Typography } from 'antd'
@@ -23,6 +29,7 @@ import { z } from 'zod'
 enum Tab {
     TICKETS = 'tickets',
     VOUCHERS = 'vouchers',
+    ORDERS = 'orders',
 }
 
 export const Route = createFileRoute('/_dashboard-layout/projects/$id')({
@@ -37,23 +44,15 @@ export const Route = createFileRoute('/_dashboard-layout/projects/$id')({
         ticketsLimit: z.number().min(1).optional(),
         vouchersPage: z.number().min(1).optional(),
         vouchersLimit: z.number().min(1).optional(),
+        ordersPage: z.number().min(1).optional(),
+        ordersLimit: z.number().min(1).optional(),
         tab: z.nativeEnum(Tab).optional(),
     }),
     loader: async ({ context: { queryClient }, params: { id } }) => {
-        queryClient
-            .prefetchQuery({
-                queryKey: projectQueryKeys.GetById(id),
-                queryFn: () => Project_GetById({ id }),
-            })
-            .catch((error) => {
-                if (error instanceof ResourceNotFoundError) {
-                    throw notFound({
-                        routeId: Route.id,
-                    })
-                }
-
-                throw error
-            })
+        queryClient.prefetchQuery({
+            queryKey: projectQueryKeys.GetById(id),
+            queryFn: () => Project_GetById({ id }),
+        })
         queryClient.prefetchQuery({
             queryKey: ticketsQueryKeys.GetAllByProjectId(id),
             queryFn: () => Tickets_GetAllByProjectId({ projectId: id }),
@@ -72,6 +71,15 @@ function ProjectDetails() {
         queryKey: projectQueryKeys.GetById(id),
         queryFn: () => Project_GetById({ id }),
         select: (res) => res.data,
+        throwOnError(error) {
+            if (error instanceof ResourceNotFoundError) {
+                throw notFound({
+                    routeId: Route.id,
+                })
+            }
+
+            throw error
+        },
     })
     const navigate = useNavigate()
     const screens = Grid.useBreakpoint()
@@ -92,39 +100,61 @@ function ProjectDetails() {
                 marginBlock: '25px',
             }}
         >
-            <Flex
-                justify='space-between'
-                style={{
-                    paddingInline: screens.xs ? 'var(--page-padding-inline-mobile)' : '0',
-                    marginBottom: '25px',
-                }}
-            >
-                <Typography.Title level={4}>Project Metadata</Typography.Title>
-                <Space>
-                    <UpdateProjectModal>
-                        {({ handleOpen }) => (
-                            <Dropdown.Button
-                                menu={{
-                                    items: [
-                                        {
-                                            key: 'delete-account',
-                                            label: 'Delete',
-                                            danger: true,
-                                            icon: <DeleteOutlined />,
-                                        },
-                                    ],
-                                }}
-                                onClick={() => handleOpen(id)}
-                            >
-                                Update
-                            </Dropdown.Button>
-                        )}
-                    </UpdateProjectModal>
-                </Space>
-            </Flex>
             {project.isLoading && <ContentWrapper.LoadingCard />}
             {project.isSuccess && (
                 <>
+                    <Flex
+                        justify='space-between'
+                        align='start'
+                        style={{
+                            paddingInline: screens.xs ? 'var(--page-padding-inline-mobile)' : '0',
+                            marginBottom: '25px',
+                        }}
+                    >
+                        <div>
+                            <Typography.Title level={4}>Project Metadata</Typography.Title>
+                            <DisabledTag disabledAt={project.data?.deletedAt} />
+                        </div>
+                        <Space>
+                            <Button type='primary'>Check in</Button>
+                            <UndisableProjectModal>
+                                {({ handleOpen: openUndisable }) => (
+                                    <DisableProjectModal>
+                                        {({ handleOpen: openDisable }) => (
+                                            <UpdateProjectModal>
+                                                {({ handleOpen: openUpdate }) => (
+                                                    <Dropdown.Button
+                                                        menu={{
+                                                            items: [
+                                                                CopyToClipboardMenuItem(id),
+                                                                project.data.deletedAt === null
+                                                                    ? {
+                                                                          key: 'disable-project',
+                                                                          label: 'Disable',
+                                                                          danger: true,
+                                                                          icon: <LockOutlined />,
+                                                                          onClick: () => openDisable(id),
+                                                                      }
+                                                                    : {
+                                                                          key: 'undisable-project',
+                                                                          label: 'Re-enable',
+                                                                          icon: <UnlockOutlined />,
+                                                                          onClick: () => openUndisable(id),
+                                                                      },
+                                                            ],
+                                                        }}
+                                                        onClick={() => openUpdate(id)}
+                                                    >
+                                                        Update
+                                                    </Dropdown.Button>
+                                                )}
+                                            </UpdateProjectModal>
+                                        )}
+                                    </DisableProjectModal>
+                                )}
+                            </UndisableProjectModal>
+                        </Space>
+                    </Flex>
                     <Descriptions
                         column={{
                             xs: 1,
@@ -199,9 +229,18 @@ function ProjectDetails() {
                 }}
                 tabBarExtraContent={
                     <RefreshButton
-                        queryKey={
-                            tab === Tab.TICKETS ? ticketsQueryKeys.GetAllByProjectId(id) : ticketVoucherQueryKeys.GetAllByProjectId(id)
-                        }
+                        queryKey={(function () {
+                            switch (tab) {
+                                case Tab.TICKETS:
+                                    return ticketsQueryKeys.GetAllByProjectId(id)
+                                case Tab.VOUCHERS:
+                                    return ticketVoucherQueryKeys.GetAllByProjectId(id)
+                                case Tab.ORDERS:
+                                    return ticketOrdersQueryKeys.GetAllByProjectId(id)
+                                default:
+                                    return []
+                            }
+                        })()}
                     />
                 }
                 destroyInactiveTabPane
@@ -218,6 +257,12 @@ function ProjectDetails() {
                         label: 'Vouchers',
                         children: <VouchersListView />,
                     },
+                    {
+                        key: Tab.ORDERS,
+                        tabKey: Tab.ORDERS,
+                        label: 'Orders',
+                        children: <OrdersListView />,
+                    },
                 ]}
             />
         </ContentWrapper>
@@ -225,7 +270,7 @@ function ProjectDetails() {
 }
 
 function TicketsListView() {
-    const id = Route.useParams({ select: (data) => data.id })
+    const projectId = Route.useParams({ select: (data) => data.id })
     const navigate = useNavigate()
     const { page, limit } = Route.useSearch({
         select: (data) => ({
@@ -234,8 +279,8 @@ function TicketsListView() {
         }),
     })
     const tickets = useQuery({
-        queryKey: ticketsQueryKeys.GetAllByProjectId(id),
-        queryFn: () => Tickets_GetAllByProjectId({ projectId: id }),
+        queryKey: ticketsQueryKeys.GetAllByProjectId(projectId),
+        queryFn: () => Tickets_GetAllByProjectId({ projectId }),
         select: (res) => ({
             list: res.data,
             total: res.data.length,
@@ -243,30 +288,26 @@ function TicketsListView() {
     })
 
     return (
-        <ContentWrapper.ContentCard
-            useCard
-            cardProps={{
-                title: 'Tickets',
-                extra: (
-                    <CreateTicketModal>
-                        {({ handleOpen }) => (
-                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpen(id)}>
+        <CreateOrUpdateTicketModal>
+            {({ handleOpenCreate, handleOpenUpdate }) => (
+                <ContentWrapper.ContentCard
+                    useCard
+                    cardProps={{
+                        title: 'Tickets',
+                        extra: (
+                            <Button type='primary' icon={<PlusOutlined />} onClick={() => handleOpenCreate(projectId)}>
                                 Create
                             </Button>
-                        )}
-                    </CreateTicketModal>
-                ),
-                style: {
-                    borderTopLeftRadius: 0,
-                },
-            }}
-        >
-            {tickets.isError && 'PLACEHOLDER FOR ERROR'}
-            <UpdateTicketModal>
-                {({ handleOpen }) => (
+                        ),
+                        style: {
+                            borderTopLeftRadius: 0,
+                        },
+                    }}
+                >
+                    {tickets.isError && 'PLACEHOLDER FOR ERROR'}
                     <TicketsTable
                         isLoading={tickets.isLoading}
-                        tickets={tickets.data}
+                        data={tickets.data}
                         page={page}
                         limit={limit}
                         tableWrapperProps={{
@@ -279,7 +320,7 @@ function TicketsListView() {
                                 key: 'update-ticket',
                                 label: 'Update',
                                 icon: <EditOutlined />,
-                                onClick: () => handleOpen(record.id),
+                                onClick: () => handleOpenUpdate(record.id),
                             },
                             {
                                 key: 'delete-ticket',
@@ -316,9 +357,9 @@ function TicketsListView() {
                             },
                         }}
                     />
-                )}
-            </UpdateTicketModal>
-        </ContentWrapper.ContentCard>
+                </ContentWrapper.ContentCard>
+            )}
+        </CreateOrUpdateTicketModal>
     )
 }
 
@@ -360,7 +401,7 @@ function VouchersListView() {
                     {vouchers.isError && 'PLACEHOLDER FOR ERROR'}
                     <BaseVouchersTable
                         isLoading={vouchers.isLoading}
-                        vouchers={vouchers.data}
+                        data={vouchers.data}
                         limit={limit}
                         page={page}
                         tableWrapperProps={{
@@ -413,5 +454,75 @@ function VouchersListView() {
                 </ContentWrapper.ContentCard>
             )}
         </CreateOrUpdateVoucherModal>
+    )
+}
+
+function OrdersListView() {
+    const projectId = Route.useParams({ select: (data) => data.id })
+    const ticketOrders = useQuery({
+        queryKey: ticketOrdersQueryKeys.GetAllByProjectId(projectId),
+        queryFn: () => TicketOrders_GetAllByProjectId({ projectId }),
+        select: (res) => ({
+            list: res.data,
+            total: res.data.length,
+        }),
+    })
+    const { page, limit } = Route.useSearch({
+        select: (data) => ({
+            limit: data.ordersLimit ?? 7,
+            page: data.ordersPage ?? 1,
+        }),
+    })
+    const navigate = useNavigate()
+
+    return (
+        <ContentWrapper.ContentCard
+            useCard
+            cardProps={{
+                title: 'Ticket Orders',
+                style: {
+                    borderTopLeftRadius: 0,
+                },
+            }}
+        >
+            {ticketOrders.isError && 'PLACEHOLDER FOR ERROR'}
+            <BaseTicketOrdersTable
+                isLoading={ticketOrders.isLoading}
+                data={ticketOrders.data}
+                limit={limit}
+                page={page}
+                tableWrapperProps={{
+                    style: {
+                        padding: 0,
+                    },
+                }}
+                tableProps={{
+                    pagination: {
+                        onChange(page, pageSize) {
+                            navigate({
+                                search: (search) => {
+                                    return {
+                                        ...search,
+                                        ordersPage: page,
+                                        ordersLimit: pageSize,
+                                    }
+                                },
+                            })
+                        },
+                        onShowSizeChange(page, pageSize) {
+                            navigate({
+                                search: (search) => {
+                                    return {
+                                        ...search,
+                                        ordersPage: page,
+                                        ordersLimit: pageSize,
+                                    }
+                                },
+                            })
+                        },
+                    },
+                }}
+            />
+        </ContentWrapper.ContentCard>
     )
 }

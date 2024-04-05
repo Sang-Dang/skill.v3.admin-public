@@ -1,7 +1,7 @@
 import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_GetAll } from '@/api/projects/Project_GetAll'
 import ContentWrapper from '@/common/components/ContentWrapper'
-import { DefaultLocale } from '@/lib/utils/DefaultLocale'
+import { DefaultLocale } from '@/common/util/DefaultLocale'
 import {
     ProFormDateRangePicker,
     ProFormDigit,

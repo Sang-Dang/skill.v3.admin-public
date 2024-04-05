@@ -25,7 +25,7 @@ export default function ProjectsByStatusTable({ page, limit, status }: ProjectTa
             isLoading={projects.isLoading}
             page={page}
             limit={limit}
-            projects={projects.data}
+            data={projects.data}
             tableWrapperProps={{
                 style: {
                     borderTopLeftRadius: 0,

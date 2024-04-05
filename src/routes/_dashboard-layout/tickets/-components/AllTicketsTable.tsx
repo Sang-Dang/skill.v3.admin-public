@@ -21,7 +21,7 @@ export default function AllTicketsTable({ page, limit }: ProjectTableProps) {
     return (
         <TicketsTable
             isLoading={tickets.isLoading}
-            tickets={tickets.data}
+            data={tickets.data}
             page={page}
             limit={limit}
             tableWrapperProps={{

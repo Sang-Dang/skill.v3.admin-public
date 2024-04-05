@@ -1,29 +1,11 @@
-import BaseTable from '@/common/components/BaseTable'
-import { ContentCardProps } from '@/common/components/ContentWrapper'
+import BaseTable, { BaseTablePropsCommon } from '@/common/components/BaseTable'
 import RoleTag from '@/common/components/RoleTag'
 import { AuthModel } from '@/lib/model/auth.model'
-import { Grid, MenuProps } from 'antd'
 import dayjs from 'dayjs'
 
-type AccountTableProps = {
-    page: number
-    limit: number
-    isLoading: boolean
-    accounts: TableData<AuthModel>
-    tableWrapperProps?: Partial<ContentCardProps>
-    appendActions?: (record: AuthModel) => MenuProps['items']
-}
-
-export default function BaseAccountsTable({ page, limit, accounts, isLoading, tableWrapperProps, appendActions }: AccountTableProps) {
-    const screens = Grid.useBreakpoint()
-
+export default function BaseAccountsTable(props: BaseTablePropsCommon<AuthModel>) {
     return (
         <BaseTable
-            isLoading={isLoading}
-            data={accounts}
-            page={page}
-            limit={limit}
-            tableWrapperProps={tableWrapperProps}
             columns={[
                 {
                     key: 'accountsTable-username',
@@ -61,11 +43,11 @@ export default function BaseAccountsTable({ page, limit, accounts, isLoading, ta
                     width: 200,
                 },
                 BaseTable.ColumnActions({
-                    screens,
                     viewLink: '/accounts/$id',
-                    appendActions: appendActions,
+                    appendActions: props.appendActions,
                 }),
             ]}
+            {...props}
         />
     )
 }

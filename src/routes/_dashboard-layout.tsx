@@ -1,5 +1,5 @@
+import { cn } from '@/common/util/cn'
 import { Role } from '@/lib/enum/role.enum'
-import { cn } from '@/lib/utils/cn'
 import {
     AccountBookOutlined,
     CreditCardOutlined,
@@ -7,10 +7,11 @@ import {
     FileAddOutlined,
     IdcardOutlined,
     LeftOutlined,
+    LockOutlined,
+    MoneyCollectOutlined,
     ProjectOutlined,
     RightOutlined,
-    SearchOutlined,
-    UnorderedListOutlined,
+    UnorderedListOutlined
 } from '@ant-design/icons'
 import { createFileRoute, Outlet, redirect, useNavigate } from '@tanstack/react-router'
 import { Button, Grid, Layout, Menu, theme } from 'antd'
@@ -120,11 +121,6 @@ function DashboardLayout() {
                                     key: '/accounts/create',
                                     icon: <FileAddOutlined />,
                                 },
-                                {
-                                    label: 'Search Accounts',
-                                    key: '/accounts/search',
-                                    icon: <SearchOutlined />,
-                                },
                             ],
                         },
                         {
@@ -141,6 +137,11 @@ function DashboardLayout() {
                                     label: 'Create Project',
                                     key: '/projects/create',
                                     icon: <FileAddOutlined />,
+                                },
+                                {
+                                    label: 'Disabled Projects',
+                                    key: '/projects/disabled',
+                                    icon: <LockOutlined />,
                                 },
                             ],
                         },
@@ -160,29 +161,48 @@ function DashboardLayout() {
                                     icon: <FileAddOutlined />,
                                 },
                                 {
+                                    label: 'Disabled Tickets',
+                                    key: '/tickets/disabled',
+                                    icon: <LockOutlined />,
+                                },
+                                {
+                                    key: 'orders',
                                     label: 'Ticket Orders',
-                                    key: '/tickets/orders',
+                                    icon: <MoneyCollectOutlined />,
+                                    children: [
+                                        {
+                                            label: 'Order List',
+                                            key: '/tickets/orders',
+                                            icon: <UnorderedListOutlined />,
+                                        },
+                                        {
+                                            label: 'Create Order',
+                                            key: '/tickets/orders/create',
+                                            icon: <FileAddOutlined />,
+                                        },
+                                    ],
                                 },
                                 {
                                     label: 'Ticket Vouchers',
-                                    key: '/tickets/vouchers',
-                                },
-                            ],
-                        },
-                        {
-                            key: 'vouchers',
-                            label: 'Vouchers',
-                            icon: <CreditCardOutlined />,
-                            children: [
-                                {
-                                    label: 'Voucher List',
-                                    key: '/vouchers',
-                                    icon: <UnorderedListOutlined />,
-                                },
-                                {
-                                    label: 'Create Voucher',
-                                    key: '/vouchers/create',
-                                    icon: <FileAddOutlined />,
+                                    key: 'vouchers',
+                                    icon: <CreditCardOutlined />,
+                                    children: [
+                                        {
+                                            label: 'Voucher List',
+                                            key: '/tickets/vouchers',
+                                            icon: <UnorderedListOutlined />,
+                                        },
+                                        {
+                                            label: 'Create Voucher',
+                                            key: '/tickets/vouchers/create',
+                                            icon: <FileAddOutlined />,
+                                        },
+                                        {
+                                            label: 'Disabled Vouchers',
+                                            key: '/tickets/vouchers/disabled',
+                                            icon: <LockOutlined />,
+                                        }
+                                    ],
                                 },
                             ],
                         },

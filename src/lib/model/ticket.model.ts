@@ -9,6 +9,7 @@ export interface ITicket extends IBase {
     startDate: Dayjs
     endDate: Dayjs
     project: string
+    images: string[]
 }
 
 export class TicketModel extends BaseModel implements ITicket {
@@ -19,6 +20,7 @@ export class TicketModel extends BaseModel implements ITicket {
     startDate: Dayjs
     endDate: Dayjs
     project: string
+    images: string[]
 
     constructor(data: ITicket) {
         super(data)
@@ -29,6 +31,7 @@ export class TicketModel extends BaseModel implements ITicket {
         this.startDate = data.startDate
         this.endDate = data.endDate
         this.project = data.project
+        this.images = data.images
     }
 
     static fromJSON(record: Record<string, any>): BaseModel {
@@ -41,6 +44,7 @@ export class TicketModel extends BaseModel implements ITicket {
             startDate: dayjs(record.startDate),
             endDate: dayjs(record.endDate),
             project: record.project,
+            images: record.images,
         })
     }
 
@@ -58,6 +62,7 @@ export class TicketModel extends BaseModel implements ITicket {
             startDate: model.startDate?.toISOString(),
             endDate: model.endDate?.toISOString(),
             project: model.project,
+            images: model.images,
         }
     }
 }

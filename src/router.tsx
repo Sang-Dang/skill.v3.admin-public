@@ -1,5 +1,5 @@
-import NetworkError from '@/common/components/DefaultNetworkErrorPage'
-import DefaultNotFoundPage from '@/common/components/DefaultNotFoundPage'
+import NetworkError from '@/common/pages/DefaultNetworkErrorPage'
+import DefaultNotFoundPage from '@/common/pages/DefaultNotFoundPage'
 import { AuthHandler } from '@/lib/AuthHandler'
 import { routeTree } from '@/routeTree.gen'
 import { QueryClient } from '@tanstack/react-query'

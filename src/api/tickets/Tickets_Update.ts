@@ -2,7 +2,7 @@ import { transformRes } from '@/api/utils'
 import { TicketModel } from '@/lib/model/ticket.model'
 import axios from 'axios'
 
-type Request = Pick<TicketModel, 'ticketName' | 'description' | 'startDate' | 'endDate' | 'price' | 'id'>
+type Request = Pick<TicketModel, 'ticketName' | 'description' | 'startDate' | 'endDate' | 'price' | 'id' | 'images'>
 type Response = TicketModel
 
 export async function Tickets_Update(req: Request) {

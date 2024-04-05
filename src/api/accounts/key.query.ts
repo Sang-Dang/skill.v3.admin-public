@@ -4,4 +4,5 @@ export const accountQueryKeys = {
     GetAll: () => ['accounts'],
     GetAllByRole: (role: Role) => ['accounts', role],
     GetById: (id: string) => ['accounts', id],
+    GetByEmail: (email: string) => ['accounts', email],
 }

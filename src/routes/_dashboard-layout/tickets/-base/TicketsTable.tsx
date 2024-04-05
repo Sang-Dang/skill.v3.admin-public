@@ -1,30 +1,11 @@
-import BaseTable from '@/common/components/BaseTable'
-import { ContentCardProps } from '@/common/components/ContentWrapper'
+import BaseTable, { BaseTablePropsCommon } from '@/common/components/BaseTable'
+import DisabledTag from '@/common/components/DisabledTag'
 import { TicketModel } from '@/lib/model/ticket.model'
-import { Grid, MenuProps, TableProps } from 'antd'
 import dayjs from 'dayjs'
 
-type ProjectTableProps = {
-    page: number
-    limit: number
-    isLoading: boolean
-    tickets: TableData<TicketModel> | undefined
-    tableWrapperProps?: Partial<ContentCardProps>
-    appendActions?: (record: TicketModel) => MenuProps['items']
-    tableProps?: TableProps<TicketModel>
-}
-
-export default function TicketsTable({ tableProps, page, limit, isLoading, tickets, tableWrapperProps, appendActions }: ProjectTableProps) {
-    const screens = Grid.useBreakpoint()
-
+export default function TicketsTable(props: BaseTablePropsCommon<TicketModel>) {
     return (
         <BaseTable
-            tableProps={tableProps}
-            isLoading={isLoading}
-            data={tickets}
-            page={page}
-            limit={limit}
-            tableWrapperProps={tableWrapperProps}
             columns={[
                 {
                     key: 'ticketsTable-ticketName',
@@ -54,21 +35,41 @@ export default function TicketsTable({ tableProps, page, limit, isLoading, ticke
                     title: 'Start Date',
                     dataIndex: 'startDate',
                     ellipsis: true,
+                    width: 120,
                     render: (value) => dayjs(value).format('YYYY-MM-DD'),
                 },
                 {
                     key: 'ticketsTable-endDate',
                     title: 'End Date',
                     dataIndex: 'endDate',
+                    width: 120,
                     ellipsis: true,
                     render: (value) => dayjs(value).format('YYYY-MM-DD'),
                 },
+                {
+                    key: 'ticketsTable-active',
+                    title: 'Active',
+                    width: 100,
+                    ellipsis: true,
+                    render: (_, record) => <DisabledTag disabledAt={record.deletedAt} showEnabled />,
+                },
+                {
+                    key: 'ticketsTable-updatedAt',
+                    title: 'Last Modified',
+                    dataIndex: 'updatedAt',
+                    width: 150,
+                    ellipsis: true,
+                    render: (value) => dayjs(value).format('YYYY-MM-DD HH:mm'),
+                    sorter: (a, b) => dayjs(a.updatedAt).unix() - dayjs(b.updatedAt).unix(),
+                    sortDirections: ['descend', 'ascend'],
+                    defaultSortOrder: 'descend',
+                },
                 BaseTable.ColumnActions({
-                    screens,
                     viewLink: '/tickets/$id',
-                    appendActions,
+                    appendActions: props.appendActions,
                 }),
             ]}
+            {...props}
         />
     )
 }

@@ -25,7 +25,7 @@ export default function AccountsByRoleTable({ role, page, limit }: AccountTableP
             isLoading={accounts.isLoading}
             page={page}
             limit={limit}
-            accounts={accounts.data}
+            data={accounts.data}
             tableWrapperProps={{
                 style: {
                     borderTopLeftRadius: 0,

@@ -6,7 +6,7 @@ import { Grid, MenuProps, Table } from 'antd'
 import { ColumnType, TableProps } from 'antd/es/table'
 import { ColumnsType } from 'antd/lib/table'
 
-type Props<T extends BaseModel> = {
+export type BaseTableProps<T> = {
     page: number
     limit: number
     isLoading: boolean
@@ -16,7 +16,14 @@ type Props<T extends BaseModel> = {
     columns: ColumnsType<T>
 }
 
-export default function BaseTable<T extends BaseModel>({
+export type BaseTablePropsCommon<T> = Pick<
+    BaseTableProps<T>,
+    'page' | 'limit' | 'isLoading' | 'data' | 'tableWrapperProps' | 'tableProps'
+> & {
+    appendActions?: (record: T) => MenuProps['items']
+}
+
+export default function BaseTable<T>({
     page,
     limit,
     isLoading,
@@ -24,17 +31,12 @@ export default function BaseTable<T extends BaseModel>({
     tableWrapperProps,
     columns,
     tableProps,
-}: Props<T>) {
+}: BaseTableProps<T>) {
     const navigate = useNavigate()
     const { pagination, ...otherProps } = tableProps || {}
 
     return (
-        <ContentWrapper.ContentCard
-            style={{
-                marginBottom: '58px',
-            }}
-            {...tableWrapperProps}
-        >
+        <ContentWrapper.ContentCard {...tableWrapperProps}>
             <Table
                 loading={isLoading}
                 dataSource={data.list}
@@ -90,20 +92,29 @@ export default function BaseTable<T extends BaseModel>({
     )
 }
 
-BaseTable.ColumnActions = function <T extends BaseModel>({
-    screens,
+BaseTable.ColumnActions = function ColumnActionsBuilder<T extends BaseModel>({
     appendActions,
     viewLink,
+    customViewId,
 }: {
-    screens: ReturnType<typeof Grid.useBreakpoint>
     appendActions?: (record: T) => MenuProps['items']
-    viewLink: string
+    viewLink?: string
+    customViewId?: (record: T) => string | string
 }): ColumnType<T> {
+    const screens = Grid.useBreakpoint()
+
     return {
         key: 'table-action',
         title: screens.xs ? 'Atn.' : 'Action',
         fixed: 'right',
         width: screens.xs ? 65 : 130,
-        render: (_: any, record: T) => <TableActionsButton record={record} viewLink={viewLink} appendItems={appendActions?.(record)} />,
+        render: (_: any, record: T) => (
+            <TableActionsButton
+                record={record}
+                viewLink={viewLink}
+                customViewId={typeof customViewId === 'string' ? customViewId : customViewId?.(record)}
+                appendItems={appendActions?.(record)}
+            />
+        ),
     }
 }

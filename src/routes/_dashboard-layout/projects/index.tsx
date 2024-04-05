@@ -30,14 +30,20 @@ export const Route = createFileRoute('/_dashboard-layout/projects/')({
         }
     },
     validateSearch: z.object({
-        page: z.number().min(1).optional().default(1),
-        limit: z.number().min(1).optional().default(7),
-        tab: z.nativeEnum(Tab).optional().default(Tab.RUNNING),
+        page: z.number().min(1).optional(),
+        limit: z.number().min(1).optional(),
+        tab: z.nativeEnum(Tab).optional(),
     }),
 })
 
 function ProjectsComponent() {
-    const search = Route.useSearch()
+    const search = Route.useSearch({
+        select: (data) => ({
+            page: data.page || 1,
+            limit: data.limit || 7,
+            tab: data.tab || Tab.RUNNING,
+        }),
+    })
     const navigate = useNavigate()
 
     return (
