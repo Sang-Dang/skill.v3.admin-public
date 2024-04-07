@@ -6,6 +6,7 @@ export interface ITicketOrderItem extends IBase {
     ticket: Pick<ITicket, 'id'>
     price: number
     quantity: number
+    checkedIn?: number
 }
 
 export class TicketOrderItemModel extends BaseModel implements ITicketOrderItem {
@@ -13,6 +14,7 @@ export class TicketOrderItemModel extends BaseModel implements ITicketOrderItem 
     ticket: Pick<ITicket, 'id'>
     price: number
     quantity: number
+    checkedIn?: number
 
     constructor(data: ITicketOrderItem) {
         super(data)
@@ -20,6 +22,7 @@ export class TicketOrderItemModel extends BaseModel implements ITicketOrderItem 
         this.ticket = data.ticket
         this.price = data.price
         this.quantity = data.quantity
+        this.checkedIn = data.checkedIn || undefined
     }
 
     static fromJSON(record: Record<string, any>): BaseModel {
@@ -29,6 +32,7 @@ export class TicketOrderItemModel extends BaseModel implements ITicketOrderItem 
             ticket: { id: record?.ticket?.id }, // TODO remove
             price: Number(record.price),
             quantity: Number(record.quantity),
+            checkedIn: record.checkedIn || undefined,
         })
     }
 
@@ -43,6 +47,7 @@ export class TicketOrderItemModel extends BaseModel implements ITicketOrderItem 
             ticket: model.ticket?.id,
             price: model.price,
             quantity: model.quantity,
+            checkedIn: model.checkedIn,
         }
     }
 }

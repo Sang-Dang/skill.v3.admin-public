@@ -40,7 +40,7 @@ export default function ContentWrapper({ children, title, breadcrumbs, headTitle
                 }}
             >
                 <Flex vertical gap={0} justify='space-between' align='flex-start'>
-                    <Breadcrumb items={breadcrumbs} />
+                    <Breadcrumb items={breadcrumbs} className='hidden md:block' />
                     <Typography.Title
                         level={screens.xs ? 4 : 3}
                         style={{

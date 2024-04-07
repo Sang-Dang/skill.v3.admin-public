@@ -46,7 +46,7 @@ const DashboardLayoutRoute = DashboardLayoutImport.update({
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 const TestIndexRoute = TestIndexImport.update({
   path: '/test/',
@@ -57,124 +57,202 @@ const DashboardLayoutTicketsIndexRoute =
   DashboardLayoutTicketsIndexImport.update({
     path: '/tickets/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutProjectsIndexRoute =
   DashboardLayoutProjectsIndexImport.update({
     path: '/projects/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/projects/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
     path: '/dashboard/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/dashboard/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutAccountsIndexRoute =
   DashboardLayoutAccountsIndexImport.update({
     path: '/accounts/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/accounts/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsDisabledRoute =
   DashboardLayoutTicketsDisabledImport.update({
     path: '/tickets/disabled',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/disabled.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsCreateRoute =
   DashboardLayoutTicketsCreateImport.update({
     path: '/tickets/create',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsIdRoute = DashboardLayoutTicketsIdImport.update({
   path: '/tickets/$id',
   getParentRoute: () => DashboardLayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_dashboard-layout/tickets/$id.lazy').then((d) => d.Route),
+)
 
 const DashboardLayoutProjectsDisabledRoute =
   DashboardLayoutProjectsDisabledImport.update({
     path: '/projects/disabled',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/projects/disabled.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutProjectsCreateRoute =
   DashboardLayoutProjectsCreateImport.update({
     path: '/projects/create',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/projects/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutProjectsIdRoute = DashboardLayoutProjectsIdImport.update({
   path: '/projects/$id',
   getParentRoute: () => DashboardLayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_dashboard-layout/projects/$id.lazy').then((d) => d.Route),
+)
 
 const DashboardLayoutAccountsEmailRoute =
   DashboardLayoutAccountsEmailImport.update({
     path: '/accounts/email',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/accounts/email.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutAccountsCreateRoute =
   DashboardLayoutAccountsCreateImport.update({
     path: '/accounts/create',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/accounts/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutAccountsIdRoute = DashboardLayoutAccountsIdImport.update({
   path: '/accounts/$id',
   getParentRoute: () => DashboardLayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_dashboard-layout/accounts/$id.lazy').then((d) => d.Route),
+)
 
 const DashboardLayoutTicketsVouchersIndexRoute =
   DashboardLayoutTicketsVouchersIndexImport.update({
     path: '/tickets/vouchers/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/vouchers/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsOrdersIndexRoute =
   DashboardLayoutTicketsOrdersIndexImport.update({
     path: '/tickets/orders/',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/orders/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsVouchersDisabledRoute =
   DashboardLayoutTicketsVouchersDisabledImport.update({
     path: '/tickets/vouchers/disabled',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/vouchers/disabled.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsVouchersCreateRoute =
   DashboardLayoutTicketsVouchersCreateImport.update({
     path: '/tickets/vouchers/create',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/vouchers/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsVouchersIdRoute =
   DashboardLayoutTicketsVouchersIdImport.update({
     path: '/tickets/vouchers/$id',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/vouchers/$id.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsOrdersCreateRoute =
   DashboardLayoutTicketsOrdersCreateImport.update({
     path: '/tickets/orders/create',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/orders/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutTicketsOrdersIdRoute =
   DashboardLayoutTicketsOrdersIdImport.update({
     path: '/tickets/orders/$id',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/tickets/orders/$id.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const DashboardLayoutProjectsIdCheckinRoute =
   DashboardLayoutProjectsIdCheckinImport.update({
     path: '/projects/$id/checkin',
     getParentRoute: () => DashboardLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_dashboard-layout/projects/$id_.checkin.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 // Populate the FileRoutesByPath interface
 
