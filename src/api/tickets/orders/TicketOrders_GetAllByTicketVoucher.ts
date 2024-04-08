@@ -11,7 +11,7 @@ export async function TicketOrders_GetAllByTicketVoucher(req: Request) {
     return axios.get<Response>('/ticket-order', {
         transformResponse: [
             (data) => transformRes(data, (res) => TicketOrderModel.fromJSONList(res.data)),
-            (data) => data.filter((order: TicketOrderModel) => order.ticketVoucher === req.ticketVoucher),
+            (data) => data.filter((order: TicketOrderModel) => order.ticketVoucher.voucherCode === req.ticketVoucher),
         ],
     })
 }

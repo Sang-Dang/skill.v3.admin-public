@@ -132,7 +132,12 @@ function TicketOrderDetails() {
                                     {
                                         key: 'ticketOrderDetails-ticketVoucher',
                                         label: 'Vouchers Applied',
-                                        children: ticket.data.ticketVoucher || 'None',
+                                        children:
+                                            (
+                                                <Link to='/tickets/vouchers/$id' params={{ id: ticket.data.ticketVoucher.id }}>
+                                                    {ticket.data.ticketVoucher.voucherCode}
+                                                </Link>
+                                            ) || 'None',
                                     },
                                     {
                                         key: 'ticketOrderDetails-project',

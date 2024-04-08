@@ -29,7 +29,7 @@ export default function BaseOrderItemsTable(props: BaseTablePropsCommon<TicketOr
                 },
                 BaseTable.ColumnActions({
                     appendActions: props.appendActions,
-                    viewLink: '/tickets/orders/$id',
+                    viewLink: '/tickets/$id',
                     customViewId: (record) => record.ticket.id,
                 }),
             ]}

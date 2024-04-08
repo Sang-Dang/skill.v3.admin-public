@@ -2,13 +2,14 @@ import { TicketOrderStatus } from '@/lib/enum/ticketOrder-status.enum'
 import { BaseModel, IBase } from '@/lib/model/base.model'
 import { PaymentModel } from '@/lib/model/payment.model'
 import { ITicketOrderItem, TicketOrderItemModel } from '@/lib/model/ticketOrderItem.model'
+import { ITicketVoucher } from '@/lib/model/ticketVoucher.model'
 
 export interface ITicketOrder extends IBase {
     email: string
     phone: string
     username: string
     total: number
-    ticketVoucher: string
+    ticketVoucher: TicketVoucherMini
     status: TicketOrderStatus
     payment: PaymentModel | null
     project: string
@@ -20,7 +21,7 @@ export class TicketOrderModel extends BaseModel implements ITicketOrder {
     phone: string
     username: string
     total: number
-    ticketVoucher: string
+    ticketVoucher: TicketVoucherMini
     status: TicketOrderStatus
     payment: PaymentModel | null
     project: string
@@ -46,7 +47,7 @@ export class TicketOrderModel extends BaseModel implements ITicketOrder {
             phone: record.phone,
             username: record.username,
             total: record.total,
-            ticketVoucher: record.ticketVoucher,
+            ticketVoucher: TicketVoucherMini.fromJSON(record.ticketVoucher),
             status: record.status,
             payment: record.payment ? PaymentModel.fromJSON(record.payment) : null,
             project: record.project,
@@ -65,11 +66,51 @@ export class TicketOrderModel extends BaseModel implements ITicketOrder {
             phone: model.phone,
             username: model.username,
             total: model.total,
-            ticketVoucher: model.ticketVoucher,
+            ticketVoucher: TicketVoucherMini.serialize(model.ticketVoucher ?? {}),
             status: model.status,
             payment: model.payment ? PaymentModel.serialize(model.payment) : undefined,
             project: model.project,
             items: model.items?.map((item) => TicketOrderItemModel.serialize(item)),
+        }
+    }
+}
+
+export class TicketVoucherMini implements Pick<ITicketVoucher, 'project' | 'quantity' | 'voucherCode' | 'note' | 'id'> {
+    project: string
+    quantity: number
+    voucherCode: string
+    note: string | null
+    id: string
+
+    constructor(data: Pick<ITicketVoucher, 'project' | 'quantity' | 'voucherCode' | 'note' | 'id'>) {
+        this.project = data.project
+        this.quantity = data.quantity
+        this.voucherCode = data.voucherCode
+        this.note = data.note
+        this.id = data.id
+    }
+
+    static fromJSON(record: Record<string, any>): TicketVoucherMini {
+        return new TicketVoucherMini({
+            project: record.project,
+            quantity: record.quantity,
+            voucherCode: record.voucherCode,
+            note: record.note,
+            id: record.id,
+        })
+    }
+
+    static fromJSONList(records: Record<string, any>[]): TicketVoucherMini[] {
+        return records.map((record) => TicketVoucherMini.fromJSON(record))
+    }
+
+    static serialize(model: Partial<TicketVoucherMini>): { [key in keyof TicketVoucherMini]: any } {
+        return {
+            project: model.project,
+            quantity: model.quantity,
+            voucherCode: model.voucherCode,
+            note: model.note,
+            id: model.id,
         }
     }
 }
