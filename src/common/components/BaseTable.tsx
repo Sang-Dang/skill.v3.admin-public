@@ -2,7 +2,7 @@ import ContentWrapper, { ContentCardProps } from '@/common/components/ContentWra
 import TableActionsButton from '@/common/components/TableActionsButton'
 import { BaseModel } from '@/lib/model/base.model'
 import { useNavigate } from '@tanstack/react-router'
-import { Grid, MenuProps, Table } from 'antd'
+import { Grid, MenuProps, Table, TableColumnProps } from 'antd'
 import { ColumnType, TableProps } from 'antd/es/table'
 import { ColumnsType } from 'antd/lib/table'
 
@@ -14,6 +14,7 @@ export type BaseTableProps<T> = {
     tableWrapperProps?: Partial<ContentCardProps>
     tableProps?: TableProps
     columns: ColumnsType<T>
+    withoutNumber?: boolean
 }
 
 export type BaseTablePropsCommon<T> = Pick<
@@ -31,6 +32,7 @@ export default function BaseTable<T>({
     tableWrapperProps,
     columns,
     tableProps,
+    withoutNumber = false,
 }: BaseTableProps<T>) {
     const navigate = useNavigate()
     const { pagination, ...otherProps } = tableProps || {}
@@ -45,13 +47,18 @@ export default function BaseTable<T>({
                 bordered
                 className='relative'
                 columns={[
-                    {
-                        key: 'table-number',
-                        title: '#',
-                        render: (_, __, index) => (page - 1) * limit + index + 1,
-                        width: 50,
-                        ellipsis: true,
-                    },
+                    ...(withoutNumber
+                        ? []
+                        : [
+                              {
+                                  key: 'table-number',
+                                  title: '#',
+                                  render: (_: unknown, __: unknown, index: number) => (page - 1) * limit + index + 1,
+                                  width: 50,
+                                  ellipsis: true,
+                                  align: 'center',
+                              } as TableColumnProps<T>,
+                          ]),
                     ...columns,
                 ]}
                 pagination={{

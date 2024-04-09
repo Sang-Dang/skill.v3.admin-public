@@ -92,12 +92,14 @@ export default function ContentWrapper({ children, title, breadcrumbs, headTitle
     )
 }
 
-export type ContentCardProps = { children: ReactNode } & (
+export type ContentCardProps = { children: ReactNode; hide?: boolean } & (
     | { useCard: true; cardProps?: CardProps }
     | { useCard?: false; style?: CSSProperties }
 )
-ContentWrapper.ContentCard = ({ children, ...props }: ContentCardProps) => {
+ContentWrapper.ContentCard = ({ children, hide = false, ...props }: ContentCardProps) => {
     const { token } = theme.useToken()
+
+    if (hide) return children
 
     if (props.useCard) {
         return (

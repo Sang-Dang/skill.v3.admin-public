@@ -1,5 +1,6 @@
 import { Role } from '@/lib/enum/role.enum'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { z } from 'zod'
 
 export const Route = createFileRoute('/_dashboard-layout/projects/$id/checkin')({
     parseParams: (rawParams: Record<string, string>) => {
@@ -7,6 +8,10 @@ export const Route = createFileRoute('/_dashboard-layout/projects/$id/checkin')(
             id: rawParams.id,
         }
     },
+    validateSearch: z.object({
+        page: z.number().min(1).optional(),
+        limit: z.number().min(1).optional(),
+    }),
     beforeLoad: async ({ context: { authHandler }, location }) => {
         const response = await authHandler.authorize(Role.ADMIN)
         if (!response) {
