@@ -93,12 +93,13 @@ export default function UpdateProjectModal({ children, afterSuccess }: Props) {
     }
 
     function handleSubmit(values: UpdateFormFieldType) {
-        if (projectId)
+        if (projectId && project.isSuccess)
             updateProject.mutate(
                 {
-                    ...values,
-                    startDate: values.duration[0],
-                    endDate: values.duration[1],
+                    description: Object.is(values.description, project.data.description) ? undefined : values.description,
+                    projectName: Object.is(values.projectName, project.data.projectName) ? undefined : values.projectName,
+                    startDate: project.data.startDate.isSame(values.duration[0]) ? undefined : values.duration[0],
+                    endDate: project.data.endDate.isSame(values.duration[1]) ? undefined : values.duration[1],
                     id: projectId,
                 },
                 {
@@ -130,6 +131,19 @@ export default function UpdateProjectModal({ children, afterSuccess }: Props) {
                 footer={[
                     <Button type='default' onClick={handleClose}>
                         Close
+                    </Button>,
+                    <Button
+                        type='default'
+                        disabled={!project.isSuccess}
+                        onClick={() =>
+                            form.setFieldsValue({
+                                projectName: project.data!.projectName,
+                                description: project.data!.description,
+                                duration: [project.data!.startDate, project.data!.endDate],
+                            })
+                        }
+                    >
+                        Reset
                     </Button>,
                     <Button type='primary' loading={updateProject.isPending} onClick={form.submit}>
                         Update Project
@@ -169,6 +183,8 @@ export default function UpdateProjectModal({ children, afterSuccess }: Props) {
                                     },
                                     {
                                         async validator(_, value) {
+                                            if (value === project.data.projectName) return Promise.resolve()
+
                                             const projects = await Project_GetAll()
 
                                             if (projects.data.find((p) => p.projectName === value)) {
