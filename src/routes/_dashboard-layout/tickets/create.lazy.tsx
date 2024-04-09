@@ -101,7 +101,7 @@ function CreateTicketComponent() {
                 requiredMark={false}
                 onFinish={handleSubmit}
                 onValuesChange={(_, val) => {
-                    console.log(val)
+                    devLog(val)
                 }}
             >
                 <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>

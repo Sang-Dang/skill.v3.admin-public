@@ -18,8 +18,8 @@ export class TicketCheckInModel extends BaseModel implements ITicketCheckIn {
     static fromJSON(record: Record<string, any>): BaseModel {
         return new TicketCheckInModel({
             ...super.fromJSON(record),
-            idOrder: record.id_order,
-            idItem: record.id_item,
+            idOrder: record.idOrder,
+            idItem: record.idItem,
         })
     }
 

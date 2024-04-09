@@ -2,7 +2,7 @@ import BaseTable, { BaseTablePropsCommon } from '@/common/components/BaseTable'
 import TableActionsButton from '@/common/components/TableActionsButton'
 import { TicketOrderModel } from '@/lib/model/ticketOrder.model'
 import { TicketOrderItemModel } from '@/lib/model/ticketOrderItem.model'
-import { Grid, Table } from 'antd'
+import { Grid, Table, Tag } from 'antd'
 import dayjs from 'dayjs'
 
 export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<TicketOrderModel>) {
@@ -49,6 +49,10 @@ export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<Tic
                                             dataIndex: 'checkedIn',
                                             width: 100,
                                             ellipsis: true,
+                                            render: (value: number, record) => {
+                                                if (record.quantity === value) return <Tag color='green'>Done</Tag>
+                                                else return value
+                                            },
                                         },
                                         {
                                             key: 'table-action-sub',

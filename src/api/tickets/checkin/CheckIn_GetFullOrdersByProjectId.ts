@@ -13,11 +13,13 @@ export async function CheckIn_GetFullOrdersByOrderId(req: Request) {
     const allCheckInItems = await axios.post<Set<string>>('/ticket-order-checkin/get-all-checkin-records', undefined, {
         transformResponse: [
             (data) => transformRes(data, (res) => TicketCheckInModel.fromJSONList(res.data)),
-            (data: TicketCheckInModel[]) => new Set(data.map((checkIn) => checkIn.idItem)),
+            (data: TicketCheckInModel[]) => {
+                return new Set(data.map((checkIn) => checkIn.idItem))
+            },
         ],
     })
 
-    return axios.get<Response>('/ticket-order', {
+    const response = await axios.get<Response>('/ticket-order', {
         transformResponse: [
             (data) => transformRes(data, (res) => TicketOrderModel.fromJSONList(res.data)),
             (data: Response) => data.filter((order) => order.project === req.projectId),
@@ -36,4 +38,6 @@ export async function CheckIn_GetFullOrdersByOrderId(req: Request) {
             },
         ],
     })
+
+    return response
 }
