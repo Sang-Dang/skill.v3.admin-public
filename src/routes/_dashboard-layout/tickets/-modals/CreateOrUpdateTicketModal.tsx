@@ -200,15 +200,16 @@ export default function CreateOrUpdateTicketModal({ children }: Props) {
         if (!projectId) throw new Error('Project ID cannot be null')
         const values = form.getFieldsValue(true)
 
-        if (ticketId) {
+        if (ticketId && ticket.isSuccess) {
             return updateTicket.mutate(
                 {
-                    ...values,
+                    description: values.description,
+                    price: values.price,
+                    ticketName: values.ticketName,
                     startDate: values.duration[0],
                     endDate: values.duration[1],
                     id: ticketId,
                     images: values.images.map((image: UploadFile<string>) => image.response),
-                    // images: values.images.map((image: UploadFile<string>) => image.response),
                 },
                 {
                     onSuccess: () => {

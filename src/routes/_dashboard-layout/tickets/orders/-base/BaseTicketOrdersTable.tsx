@@ -39,9 +39,9 @@ export default function BaseTicketOrdersTable(props: BaseTablePropsCommon<Ticket
                     key: 'ticketOrdersTable-createdAt',
                     title: 'Created',
                     dataIndex: 'createdAt',
-                    width: 120,
+                    width: 160,
                     ellipsis: true,
-                    render: (value) => dayjs(value).format('YYYY-MM-DD'),
+                    render: (value) => dayjs(value).format('YYYY-MM-DD HH:mm:ss'),
                 },
                 BaseTable.ColumnActions({
                     viewLink: '/tickets/orders/$id',

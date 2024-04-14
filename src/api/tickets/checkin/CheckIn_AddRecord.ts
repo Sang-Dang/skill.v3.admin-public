@@ -16,7 +16,9 @@ export async function CheckIn_AddRecord(req: Request) {
             (data) =>
                 transformRes(
                     data,
-                    (res) => TicketCheckInModel.fromJSON(res),
+                    (res) => {
+                        return TicketCheckInModel.fromJSON(res.data)
+                    },
                     (error) => {
                         if (error.statusCode === 400 && error.message === 'Record is existed') {
                             throw new AlreadyCheckedInError()

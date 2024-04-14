@@ -9,8 +9,12 @@ type Request = {
 type Response = TicketCheckInModel[]
 
 export async function CheckIn_GetByOrderId(req: Request) {
-    return axios.get<Response>('/ticket-order-checkin/get-checkin-records', {
-        params: req,
-        transformResponse: [(data) => transformRes(data, (res) => TicketCheckInModel.fromJSONList(res.data))],
+    return axios.post<Response>('/ticket-order-checkin/get-checkin-records', req, {
+        transformResponse: [
+            (data) =>
+                transformRes(data, (res) => {
+                    return TicketCheckInModel.fromJSONList(res.data)
+                }),
+        ],
     })
 }

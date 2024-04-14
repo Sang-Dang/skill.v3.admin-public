@@ -2,11 +2,12 @@ import { Auth_Login } from '@/api/auth/Auth_Login'
 import { Auth_LoginFirebase } from '@/api/auth/Auth_LoginFirebase'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Button, Divider, Form, Input } from 'antd'
+import { App, Button, Card, Divider, Form, Grid, Input, Tooltip } from 'antd'
 import { UserCredential } from 'firebase/auth'
 import { useEffect } from 'react'
 
 import { createLazyFileRoute } from '@tanstack/react-router'
+import { useAuth } from '@/common/util/useAuth'
 
 export const Route = createLazyFileRoute('/')({
     component: IndexPage,
@@ -19,10 +20,9 @@ type LoginFormField = {
 
 function IndexPage() {
     const navigate = useNavigate()
-    const auth = Route.useRouteContext({
-        select: (data) => data.authHandler,
-    })
+    const auth = useAuth()
     const { message } = App.useApp()
+    const screens = Grid.useBreakpoint()
     const error = Route.useSearch({
         select: (data) => data.error,
     })
@@ -104,88 +104,102 @@ function IndexPage() {
             <div className='flex h-screen flex-1 flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8'>
                 <div className='sm:mx-auto sm:w-full sm:max-w-md'>
                     <img
-                        className='mx-auto h-10 w-auto'
-                        src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
-                        alt='Your Company'
+                        className='mx-auto h-24 w-auto object-fill'
+                        src='./logo.svg'
+                        alt='Skillcetera Logo'
+                        style={{
+                            transform: screens.xs ? '' : 'scale(2)',
+                            display: screens.xs ? 'none' : 'block',
+                        }}
                     />
                     <h2 className='mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Sign in to your account</h2>
                 </div>
 
                 <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]'>
                     <div className='bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12'>
-                        <Form className='space-y-6' layout='vertical' requiredMark={false} onFinish={handleCredentialsLogin}>
-                            <Form.Item<LoginFormField>
-                                name='email'
-                                label={
-                                    <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
-                                        Email address
-                                    </label>
-                                }
-                                validateDebounce={500}
-                                validateFirst
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your email!',
-                                    },
-                                    {
-                                        type: 'email',
-                                        message: 'The input is not valid E-mail!',
-                                    },
-                                ]}
-                            >
-                                <Input type='text' autoComplete='username' />
-                            </Form.Item>
-
-                            <Form.Item<LoginFormField>
-                                name='password'
-                                label={
-                                    <label htmlFor='password' className='block text-sm font-medium leading-6 text-gray-900'>
-                                        Password
-                                    </label>
-                                }
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your password!',
-                                    },
-                                ]}
-                            >
-                                <Input type='password' autoComplete='current-password' />
-                            </Form.Item>
-
-                            <div className='flex items-center justify-between'>
-                                <div className='flex items-center'>
-                                    <input
-                                        id='remember-me'
-                                        name='remember-me'
-                                        type='checkbox'
-                                        className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
-                                    />
-                                    <label htmlFor='remember-me' className='ml-3 block text-sm leading-6 text-gray-900'>
-                                        Remember me
-                                    </label>
-                                </div>
-
-                                <div className='text-sm leading-6'>
-                                    <a href='#' className='font-semibold text-indigo-600 hover:text-indigo-500'>
-                                        Forgot password?
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div>
-                                <Button
-                                    type='primary'
-                                    size='large'
-                                    htmlType='submit'
-                                    className='flex w-full justify-center text-sm font-semibold leading-6 text-white shadow-sm'
-                                    loading={credentialsLogin.isPending || googleLogin.isPending}
+                        <Tooltip title='Credentials login has been disabled. Please login with Google.'>
+                            <Card className='cursor-not-allowed opacity-80'>
+                                <Form
+                                    className='space-y-6'
+                                    layout='vertical'
+                                    requiredMark={false}
+                                    onFinish={handleCredentialsLogin}
+                                    disabled={true}
                                 >
-                                    Sign in
-                                </Button>
-                            </div>
-                        </Form>
+                                    <Form.Item<LoginFormField>
+                                        name='email'
+                                        label={
+                                            <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
+                                                Email address
+                                            </label>
+                                        }
+                                        validateDebounce={500}
+                                        validateFirst
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input your email!',
+                                            },
+                                            {
+                                                type: 'email',
+                                                message: 'The input is not valid E-mail!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input type='text' autoComplete='username' />
+                                    </Form.Item>
+
+                                    <Form.Item<LoginFormField>
+                                        name='password'
+                                        label={
+                                            <label htmlFor='password' className='block text-sm font-medium leading-6 text-gray-900'>
+                                                Password
+                                            </label>
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input your password!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input type='password' autoComplete='current-password' />
+                                    </Form.Item>
+
+                                    <div className='flex items-center justify-between'>
+                                        <div className='flex items-center'>
+                                            <input
+                                                id='remember-me'
+                                                name='remember-me'
+                                                type='checkbox'
+                                                className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
+                                            />
+                                            <label htmlFor='remember-me' className='ml-3 block text-sm leading-6 text-gray-900'>
+                                                Remember me
+                                            </label>
+                                        </div>
+
+                                        <div className='text-sm leading-6'>
+                                            <a href='#' className='font-semibold text-indigo-600 hover:text-indigo-500'>
+                                                Forgot password?
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Button
+                                            type='primary'
+                                            size='large'
+                                            htmlType='submit'
+                                            className='flex w-full justify-center text-sm font-semibold leading-6 text-white shadow-sm'
+                                            loading={credentialsLogin.isPending || googleLogin.isPending}
+                                        >
+                                            Sign in
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </Card>
+                        </Tooltip>
 
                         <div>
                             <Divider className='mt-6' plain>

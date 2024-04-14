@@ -129,13 +129,17 @@ export default function CreateOrUpdateVoucherModal({ children }: Props) {
 
     function handleSubmit() {
         const values = form.getFieldsValue(true)
-        if (voucherId !== undefined) {
+        if (voucherId !== undefined && projectId !== undefined && voucher.isSuccess) {
             updateVoucher.mutate(
                 {
-                    ...values,
+                    discount: Object.is(voucher.data.discount, values.discount) ? undefined : values.discount,
+                    quantity: Object.is(voucher.data.quantity, values.quantity) ? undefined : values.quantity,
+                    voucherCode: Object.is(voucher.data.voucherCode, values.voucherCode) ? undefined : values.voucherCode,
+                    note: Object.is(voucher.data.note, values.note) ? undefined : values.note,
+                    project: projectId,
                     id: voucherId,
-                    startDate: values.duration[0],
-                    endDate: values.duration[1],
+                    startDate: Object.is(voucher.data.startDate, values.duration[0]) ? undefined : values.duration[0],
+                    endDate: Object.is(voucher.data.endDate, values.duration[1]) ? undefined : values.duration[1],
                 },
                 {
                     onSuccess: () => {
@@ -152,7 +156,7 @@ export default function CreateOrUpdateVoucherModal({ children }: Props) {
                                         })
                                     }
                                 >
-                                    View Project
+                                    View Voucher
                                 </Button>
                             ),
                         })
@@ -183,7 +187,7 @@ export default function CreateOrUpdateVoucherModal({ children }: Props) {
                                         })
                                     }
                                 >
-                                    View Project
+                                    View Voucher
                                 </Button>
                             ),
                         })
@@ -203,10 +207,10 @@ export default function CreateOrUpdateVoucherModal({ children }: Props) {
                 title={voucherId ? 'Update Voucher' : 'Create Voucher'}
                 width={800}
                 footer={[
-                    <Button type='default' onClick={handleClose}>
+                    <Button type='default' onClick={handleClose} key='createorupdatevouchermodal-close'>
                         Close
                     </Button>,
-                    <Button type='primary' loading={createVoucher.isPending} onClick={form.submit}>
+                    <Button type='primary' loading={createVoucher.isPending} onClick={form.submit} key='createorupdatevouchermodal-action'>
                         {voucherId ? 'Update' : 'Create'} Voucher
                     </Button>,
                 ]}
@@ -237,6 +241,8 @@ export default function CreateOrUpdateVoucherModal({ children }: Props) {
                             },
                             {
                                 async validator(_, value) {
+                                    if (Object.is(value, voucher.data?.voucherCode)) return Promise.resolve()
+
                                     const vouchers = await TicketVoucher_GetAllByProjectId({ projectId: projectId! })
 
                                     if (vouchers.data.find((v) => v.voucherCode === value) !== undefined) {

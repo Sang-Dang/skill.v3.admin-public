@@ -9,12 +9,22 @@ type Request = {
 
 type Response = TicketOrderModel[]
 
-export async function CheckIn_GetFullOrdersByOrderId(req: Request) {
-    const allCheckInItems = await axios.post<Set<string>>('/ticket-order-checkin/get-all-checkin-records', undefined, {
+type CheckInOrders = {
+    [itemId: string]: number
+}
+
+export async function CheckIn_GetFullOrdersByProjectId(req: Request) {
+    const allCheckInItems = await axios.post<CheckInOrders>('/ticket-order-checkin/get-all-checkin-records', undefined, {
         transformResponse: [
             (data) => transformRes(data, (res) => TicketCheckInModel.fromJSONList(res.data)),
             (data: TicketCheckInModel[]) => {
-                return new Set(data.map((checkIn) => checkIn.idItem))
+                return data.reduce(
+                    (prev, curr) => ({
+                        ...prev,
+                        [curr.idItem]: (prev[curr.idItem] || 0) + 1,
+                    }),
+                    {} as CheckInOrders,
+                )
             },
         ],
     })
@@ -26,8 +36,8 @@ export async function CheckIn_GetFullOrdersByOrderId(req: Request) {
             (data: Response) => {
                 return data.map((order) => {
                     order.items = order.items.map((item) => {
-                        if (allCheckInItems.data.has(item.id)) {
-                            item.checkedIn += 1
+                        if (allCheckInItems.data[item.id] !== undefined) {
+                            item.checkedIn = allCheckInItems.data[item.id]
                         }
 
                         return item

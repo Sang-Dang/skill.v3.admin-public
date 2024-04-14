@@ -1,5 +1,7 @@
 import { projectQueryKeys } from '@/api/projects/key.query'
 import { Project_GetById } from '@/api/projects/Project_GetById'
+import { CheckIn_GetByOrderId } from '@/api/tickets/checkin/CheckIn_GetByOrderId'
+import { ticketCheckInQueryKeys } from '@/api/tickets/checkin/key.query'
 import { ticketOrdersQueryKeys } from '@/api/tickets/orders/key.query'
 import { TicketOrders_GetById } from '@/api/tickets/orders/TicketOrders_GetById'
 import ContentWrapper from '@/common/components/ContentWrapper'
@@ -7,14 +9,15 @@ import { CopyToClipboardMenuItem } from '@/common/components/CopyToClipboardMenu
 import DetailsNotFound from '@/common/pages/DetailsNotFound'
 import { TicketOrderStatus } from '@/lib/enum/ticketOrder-status.enum'
 import { ResourceNotFoundError } from '@/lib/errors/ResourceNotFoundError'
+import { TicketCheckInModel } from '@/lib/model/ticketCheckIn.model'
 import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
-import BaseOrderItemsTable from '@/routes/_dashboard-layout/tickets/orders/-base/BaseOrderItemsTable'
 import BaseTransactionsTable from '@/routes/_dashboard-layout/tickets/orders/-base/BaseTransactionsTable'
+import OrderItemsWithCheckedIn from '@/routes/_dashboard-layout/tickets/orders/-base/OrderItemsWithCheckedIn'
 import { TicketOrdersBreadcrumbs } from '@/routes/_dashboard-layout/tickets/orders/-breadcrumbs'
 import { TicketOrderIdTabs } from '@/routes/_dashboard-layout/tickets/orders/-utils/TicketOrderIdTabs.enum'
 import { useQuery } from '@tanstack/react-query'
 import { createLazyFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router'
-import { Button, Descriptions, Dropdown, Flex, Grid, Skeleton, Space, Steps, Tabs, Typography } from 'antd'
+import { Button, Descriptions, Dropdown, Flex, Grid, Skeleton, Space, Steps, Tabs, Tag, Typography } from 'antd'
 import { useMemo } from 'react'
 
 export const Route = createLazyFileRoute('/_dashboard-layout/tickets/orders/$id')({
@@ -39,6 +42,15 @@ function TicketOrderDetails() {
             throw error
         },
     })
+
+    const checkedIn = useQuery({
+        queryKey: ticketCheckInQueryKeys.GetAllByOrderId(id),
+        queryFn: () => CheckIn_GetByOrderId({ idOrder: id }),
+        select: (res) => {
+            return TicketCheckInModel.parseFlat(res.data)
+        },
+    })
+
     const search = Route.useSearch({
         select: (search) => ({
             tab: search.tab ?? TicketOrderIdTabs.ORDER_ITEMS,
@@ -155,9 +167,23 @@ function TicketOrderDetails() {
                                         ),
                                     },
                                     {
-                                        key: 'ticketOrderDetails-numberOfItems',
-                                        label: 'Number of Items',
-                                        children: ticket.data.items.length,
+                                        key: 'ticketOrderDetails-numberOfTickets',
+                                        label: 'Number of Tickets',
+                                        children: ticket.data.items.reduce((prev, curr) => prev + curr.quantity, 0),
+                                    },
+                                    {
+                                        key: 'ticketOrderDetails-status',
+                                        label: 'Status',
+                                        children: ticket.data.items.every((item) => item.quantity === checkedIn.data?.[item.id]) ? (
+                                            <Tag color='green'>All Checked In</Tag>
+                                        ) : (
+                                            <Tag color='red'>
+                                                {ticket.data.items.reduce((prev, curr) => {
+                                                    return (prev += curr.quantity - (checkedIn.data?.[curr.id] || 0))
+                                                }, 0)}{' '}
+                                                Not Checked In
+                                            </Tag>
+                                        ),
                                     },
                                 ]}
                             />
@@ -285,12 +311,12 @@ function TicketOrderDetails() {
                                 key: TicketOrderIdTabs.ORDER_ITEMS,
                                 label: 'Ordered Items',
                                 children: (
-                                    <BaseOrderItemsTable
+                                    <OrderItemsWithCheckedIn
                                         data={{
                                             list: ticket.data.items,
                                             total: ticket.data.items.length,
                                         }}
-                                        isLoading={ticket.isPending}
+                                        isLoading={ticket.isPending || checkedIn.isPending}
                                         limit={search.OILimit}
                                         page={search.OIPage}
                                         tableWrapperProps={{
@@ -298,6 +324,7 @@ function TicketOrderDetails() {
                                                 borderTopLeftRadius: 0,
                                             },
                                         }}
+                                        checkedInData={checkedIn.data}
                                     />
                                 ),
                             },

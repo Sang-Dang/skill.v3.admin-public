@@ -1,12 +1,16 @@
-import { CheckIn_GetFullOrdersByOrderId } from '@/api/tickets/checkin/CheckIn_GetFullOrdersByProjectId'
+import { CheckIn_GetAll } from '@/api/tickets/checkin/CheckIn_GetAll'
 import { ticketCheckInQueryKeys } from '@/api/tickets/checkin/key.query'
+import { ticketOrdersQueryKeys } from '@/api/tickets/orders/key.query'
+import { TicketOrders_GetAllByProjectId } from '@/api/tickets/orders/TicketOrders_GetAllByProjectId'
 import ContentWrapper from '@/common/components/ContentWrapper'
+import { ITicketCheckInParsed, TicketCheckInModel } from '@/lib/model/ticketCheckIn.model'
+import { TicketOrderModel } from '@/lib/model/ticketOrder.model'
 import { DashboardBreadcrumbs } from '@/routes/_dashboard-layout/dashboard/-breadcrumbs'
 import { ProjectBreadcrumbs } from '@/routes/_dashboard-layout/projects/-breadcrumbs'
 import CheckInModal from '@/routes/_dashboard-layout/projects/-modals/CheckInModal'
 import OrdersTableWithCheckedIn from '@/routes/_dashboard-layout/tickets/orders/-base/OrdersTableWithCheckedIn'
 import { QrcodeOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { Card, Divider, Space, Statistic } from 'antd'
 import { useMemo } from 'react'
@@ -23,18 +27,38 @@ function CheckinPage() {
             limit: data.limit || 7,
         }),
     })
-    const orders = useQuery({
-        queryKey: ticketCheckInQueryKeys.GetFullOrdersByProjectId(id),
-        queryFn: () => CheckIn_GetFullOrdersByOrderId({ projectId: id }),
-        select: (res) => ({
-            list: res.data,
-            total: res.data.length,
+
+    const { orders, checkIns, ...data } = useQueries({
+        queries: [
+            {
+                queryKey: ticketOrdersQueryKeys.GetAllByProjectId(id),
+                queryFn: () => TicketOrders_GetAllByProjectId({ projectId: id }),
+                select: (res: any) =>
+                    ({
+                        list: res.data,
+                        total: res.data.length,
+                    }) as {
+                        list: TicketOrderModel[]
+                        total: number
+                    },
+            },
+            {
+                queryKey: ticketCheckInQueryKeys.GetAll(),
+                queryFn: () => CheckIn_GetAll(),
+                select: (res: any) => TicketCheckInModel.parse(res.data) as ITicketCheckInParsed,
+            },
+        ],
+        combine: (data) => ({
+            orders: data[0],
+            checkIns: data[1],
+            isLoading: data.some((d) => d.isLoading),
+            isError: data.some((d) => d.isError),
+            isSuccess: data.every((d) => d.isSuccess),
         }),
     })
 
     const ticketsStats = useMemo(() => {
         if (!orders.isSuccess) return undefined
-
         const allOrderItems = orders.data.list.map((order) => order.items).flat()
         const allTickets = allOrderItems.reduce((prev, curr) => prev + curr.quantity, 0)
         const allCheckedIn = allOrderItems.reduce((prev, curr) => prev + curr.checkedIn, 0)
@@ -80,7 +104,13 @@ function CheckinPage() {
                     )}
                 </CheckInModal>
             </div>
-            <OrdersTableWithCheckedIn data={orders.data} isLoading={orders.isLoading} limit={search.limit} page={search.page} />
+            <OrdersTableWithCheckedIn
+                data={orders.data}
+                isLoading={data.isLoading}
+                limit={search.limit}
+                page={search.page}
+                checkIns={checkIns.data}
+            />
         </ContentWrapper>
     )
 }

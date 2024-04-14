@@ -1,13 +1,17 @@
 import BaseTable, { BaseTablePropsCommon } from '@/common/components/BaseTable'
-import TableActionsButton from '@/common/components/TableActionsButton'
+import { ITicketCheckInParsed } from '@/lib/model/ticketCheckIn.model'
 import { TicketOrderModel } from '@/lib/model/ticketOrder.model'
 import { TicketOrderItemModel } from '@/lib/model/ticketOrderItem.model'
-import { Grid, Table, Tag } from 'antd'
+import { LinkOutlined } from '@ant-design/icons'
+import { Link } from '@tanstack/react-router'
+import { Table, Tag } from 'antd'
 import dayjs from 'dayjs'
 
-export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<TicketOrderModel>) {
-    const screens = Grid.useBreakpoint()
-
+export default function OrdersTableWithCheckedIn(
+    props: BaseTablePropsCommon<TicketOrderModel> & {
+        checkIns?: ITicketCheckInParsed
+    },
+) {
     return (
         <BaseTable
             tableWrapperProps={{
@@ -21,20 +25,37 @@ export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<Tic
                     columnWidth: 50,
                     indentSize: 0,
                     childrenColumnName: '123',
-                    expandedRowRender: (record) => {
+                    expandedRowRender: (orderRecord: TicketOrderModel) => {
                         return (
                             <div className='p-0'>
                                 <Table
-                                    dataSource={record.items}
+                                    dataSource={orderRecord.items}
                                     pagination={false}
-                                    virtual
+                                    bordered={true}
+                                    size='middle'
                                     columns={[
+                                        {
+                                            key: 'ordersTableWithCheckedIn-no',
+                                            title: '#',
+                                            width: 30,
+                                            align: 'center',
+                                            render: (_, __, index) => index + 1,
+                                        },
                                         {
                                             key: 'ordersTableWithCheckedIn-items-name',
                                             title: 'Ticket',
-                                            dataIndex: 'name',
                                             width: 100,
                                             ellipsis: true,
+                                            render: (_, record: TicketOrderItemModel) => (
+                                                <Link
+                                                    to={'/tickets/$id'}
+                                                    params={{
+                                                        id: record.ticket.id,
+                                                    }}
+                                                >
+                                                    {record.name} <LinkOutlined />
+                                                </Link>
+                                            ),
                                         },
                                         {
                                             key: 'ordersTableWithCheckedIn-items-quantity',
@@ -49,23 +70,14 @@ export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<Tic
                                             dataIndex: 'checkedIn',
                                             width: 100,
                                             ellipsis: true,
-                                            render: (value: number, record) => {
-                                                if (record.quantity === value) return <Tag color='green'>Done</Tag>
-                                                else return value
+                                            render: (_, itemRecord) => {
+                                                const checkedInCount = props.checkIns?.[orderRecord.id]?.[itemRecord.id]
+                                                if (checkedInCount === itemRecord.quantity) {
+                                                    return <Tag color='green'>Done</Tag>
+                                                } else {
+                                                    return <>{checkedInCount} Checked In</>
+                                                }
                                             },
-                                        },
-                                        {
-                                            key: 'table-action-sub',
-                                            title: screens.xs ? 'Atn.' : 'Action',
-                                            fixed: 'right',
-                                            width: screens.xs ? 65 : 130,
-                                            render: (_: any, record: TicketOrderItemModel) => (
-                                                <TableActionsButton<TicketOrderItemModel>
-                                                    record={record}
-                                                    viewLink='/tickets/$id'
-                                                    customViewId={record.ticket.id}
-                                                />
-                                            ),
                                         },
                                     ]}
                                 />
@@ -92,9 +104,23 @@ export default function OrdersTableWithCheckedIn(props: BaseTablePropsCommon<Tic
                 {
                     key: 'ordersTableWithCheckedIn-itemsLength',
                     title: 'No. Tickets',
-                    width: 100,
+                    width: 70,
                     ellipsis: true,
                     render: (_, record) => record.items.reduce((prev, curr) => prev + curr.quantity, 0),
+                },
+                {
+                    key: 'ordersTableWithCheckedIn-status',
+                    title: 'Status',
+                    width: 60,
+                    align: 'center',
+                    ellipsis: true,
+                    render: (_, record) =>
+                        record.items.every((item) => item.quantity === props.checkIns?.[record.id]?.[item.id]) &&
+                        record.items.length > 0 ? (
+                            <Tag color='green'>Done</Tag>
+                        ) : (
+                            <Tag color='red'>Pending</Tag>
+                        ),
                 },
                 {
                     key: 'ordersTableWithCheckedIn-createdAt',

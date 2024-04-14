@@ -5,6 +5,16 @@ export interface ITicketCheckIn extends IBase {
     idItem: string
 }
 
+export interface ITicketCheckInParsed {
+    [orderId: string]: {
+        [itemId: string]: number
+    }
+}
+
+export interface ITicketCheckInFlat {
+    [itemId: string]: number
+}
+
 export class TicketCheckInModel extends BaseModel implements ITicketCheckIn {
     idOrder: string
     idItem: string
@@ -33,5 +43,28 @@ export class TicketCheckInModel extends BaseModel implements ITicketCheckIn {
             idOrder: model.idOrder,
             idItem: model.idItem,
         }
+    }
+
+    static parse(model: TicketCheckInModel[]) {
+        return model.reduce(
+            (prev, curr) => ({
+                ...prev,
+                [curr.idOrder]: {
+                    ...prev[curr.idOrder],
+                    [curr.idItem]: (prev[curr.idOrder]?.[curr.idItem] || 0) + 1,
+                },
+            }),
+            {} as ITicketCheckInParsed,
+        )
+    }
+
+    static parseFlat(model: TicketCheckInModel[]) {
+        return model.reduce(
+            (prev, curr) => ({
+                ...prev,
+                [curr.idItem]: (prev[curr.idItem] || 0) + 1,
+            }),
+            {} as ITicketCheckInFlat,
+        )
     }
 }

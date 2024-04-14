@@ -40,6 +40,7 @@ export class AuthHandler {
         devLog('Logout Successful')
         this.removeCookieToken()
         this.memoryToken = null
+        AuthHandler.setRequestToken()
     }
 
     public async showGoogleLogin() {
@@ -156,7 +157,7 @@ export class AuthHandler {
         return jwtDecode(token) as Token
     }
 
-    private static setRequestToken(token: string) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    private static setRequestToken(token?: string) {
+        axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : undefined
     }
 }
